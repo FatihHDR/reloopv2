@@ -10,7 +10,7 @@ export const Component = () => {
 
   return (
    <footer className="my-8 px- max-w-5xl text-base-content mx-auto">
-      <div className="relative bg-white rounded-3xl max-w-5xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="relative bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl max-w-5xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between items-center gap-6 border border-primary/10 shadow-sm">
         <div className="hidden md:block absolute -top-4 -left-8 w-[80px] h-[36px] scale-75">
           {tape}
         </div>
@@ -104,7 +104,7 @@ export const Component = () => {
             target="_blank"
             rel="nofollow noopener"
             aria-label="Twitter"
-            className="hover:text-primary transition-colors"
+            className="text-gray-600 hover:text-black transition-colors"
           >
             <Twitter className="w-5 h-5" />
           </a>
