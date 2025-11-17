@@ -7,6 +7,7 @@ import { NavBar } from "./tubelight-navbar";
 import { OfferCarousel, type Offer } from "./offer-carousel";
 import { CircularTestimonials } from "./circular-testimonials";
 import { DottedSurface } from "../dotted-surface";
+import { FeaturesSectionWithHoverEffects } from "./feature-section-with-hover-effects";
 
 const categories = [
     {
@@ -268,6 +269,32 @@ export function CommerceHero() {
                         transition={{ duration: 0.6, delay: 0.5 }}
                     >
                         <OfferCarousel offers={featuredProducts} />
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* Features Section */}
+            <section className="py-20 md:py-28 bg-gradient-to-b from-background to-accent/10">
+                <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="mb-12 text-center"
+                    >
+                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3">
+                            Why Choose ReLoop
+                        </h2>
+                        <p className="text-lg text-muted-foreground">
+                            The sustainable marketplace you can trust
+                        </p>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.5 }}
+                    >
+                        <FeaturesSectionWithHoverEffects />
                     </motion.div>
                 </div>
             </section>
