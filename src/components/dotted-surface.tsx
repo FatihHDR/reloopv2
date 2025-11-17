@@ -1,17 +1,10 @@
-'use client';
 import { cn } from '@/lib/utils';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 type DottedSurfaceProps = Omit<React.ComponentProps<'div'>, 'ref'>;
 
 export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
-	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => {
-		setMounted(true);
-	}, []);
-
 	const containerRef = useRef<HTMLDivElement>(null);
 	const sceneRef = useRef<{
 		scene: THREE.Scene;
@@ -25,31 +18,35 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 	useEffect(() => {
 		if (!containerRef.current) return;
 
-		const SEPARATION = 150;
-		const AMOUNTX = 40;
-		const AMOUNTY = 60;
+		const container = containerRef.current;
+		const width = container.clientWidth || window.innerWidth;
+		const height = container.clientHeight || 600;
+
+		const SEPARATION = 60;
+		const AMOUNTX = Math.floor(width / SEPARATION) + 2;
+		const AMOUNTY = Math.floor(height / SEPARATION) + 2;
 
 		// Scene setup
 		const scene = new THREE.Scene();
-		scene.fog = new THREE.Fog(0xffffff, 2000, 10000);
 
 		const camera = new THREE.PerspectiveCamera(
-			60,
-			window.innerWidth / window.innerHeight,
+			75,
+			width / height,
 			1,
 			10000,
 		);
-		camera.position.set(0, 355, 1220);
+		camera.position.set(0, 400, 500);
+		camera.lookAt(0, -100, 0);
 
 		const renderer = new THREE.WebGLRenderer({
 			alpha: true,
 			antialias: true,
 		});
 		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setClearColor(scene.fog.color, 0);
+		renderer.setSize(width, height);
+		renderer.setClearColor(0x000000, 0);
 
-		containerRef.current.appendChild(renderer.domElement);
+		container.appendChild(renderer.domElement);
 
 		// Create particles
 		const particles: THREE.Points[] = [];
@@ -78,10 +75,10 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 
 		// Create material
 		const material = new THREE.PointsMaterial({
-			size: 8,
+			size: 3,
 			vertexColors: true,
 			transparent: true,
-			opacity: 0.8,
+			opacity: 0.4,
 			sizeAttenuation: true,
 		});
 
@@ -104,10 +101,10 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 				for (let iy = 0; iy < AMOUNTY; iy++) {
 					const index = i * 3;
 
-					// Animate Y position with sine waves
+					// Animate Y position with sine waves - smoother animation
 					positions[index + 1] =
-						Math.sin((ix + count) * 0.3) * 50 +
-						Math.sin((iy + count) * 0.5) * 50;
+						Math.sin((ix + count) * 0.2) * 30 +
+						Math.sin((iy + count) * 0.3) * 30;
 
 					i++;
 				}
@@ -125,14 +122,16 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 			}
 
 			renderer.render(scene, camera);
-			count += 0.1;
+			count += 0.05;
 		};
 
 		// Handle window resize
 		const handleResize = () => {
-			camera.aspect = window.innerWidth / window.innerHeight;
+			const width = container.clientWidth || window.innerWidth;
+			const height = container.clientHeight || 600;
+			camera.aspect = width / height;
 			camera.updateProjectionMatrix();
-			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.setSize(width, height);
 		};
 
 		window.addEventListener('resize', handleResize);
@@ -171,19 +170,19 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 
 				sceneRef.current.renderer.dispose();
 
-				if (containerRef.current && sceneRef.current.renderer.domElement) {
-					containerRef.current.removeChild(
+				if (container && sceneRef.current.renderer.domElement) {
+					container.removeChild(
 						sceneRef.current.renderer.domElement,
 					);
 				}
 			}
 		};
-	}, [mounted]);
+	}, []);
 
 	return (
 		<div
 			ref={containerRef}
-			className={cn('pointer-events-none fixed inset-0 -z-1', className)}
+			className={cn('pointer-events-none absolute inset-0 z-0 w-full h-full', className)}
 			{...props}
 		/>
 	);

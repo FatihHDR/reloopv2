@@ -149,9 +149,9 @@ export function CommerceHero() {
             {/* Hero Section */}
             <div className="container px-4 md:px-6 mx-auto max-w-7xl mt-16 md:mt-20">
                 <div className="bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl relative overflow-hidden">
-                    <DottedSurface className="absolute inset-0 z-0 rounded-3xl" />
+                    <DottedSurface />
                     <motion.section
-                        className="w-full px-6 md:px-12 py-20 md:py-28 relative"
+                        className="w-full px-6 md:px-12 py-20 md:py-28 relative z-10"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
