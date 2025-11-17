@@ -8,6 +8,8 @@ import { OfferCarousel, type Offer } from "./offer-carousel";
 import { CircularTestimonials } from "./circular-testimonials";
 import { DottedSurface } from "../dotted-surface";
 import { FeaturesSectionWithHoverEffects } from "./feature-section-with-hover-effects";
+import StatsSection from "./stats-section";
+import CTASection from "./cta-section";
 
 const categories = [
     {
@@ -273,6 +275,9 @@ export function CommerceHero() {
                 </div>
             </section>
 
+            {/* Stats Section */}
+            <StatsSection />
+
             {/* Features Section */}
             <section className="py-20 md:py-28 bg-gradient-to-b from-background to-accent/10">
                 <div className="container px-4 md:px-6 mx-auto max-w-7xl">
@@ -298,6 +303,9 @@ export function CommerceHero() {
                     </motion.div>
                 </div>
             </section>
+
+            {/* CTA Section */}
+            <CTASection />
 
             {/* Testimonials Section */}
             <section className="py-20 md:py-28">
