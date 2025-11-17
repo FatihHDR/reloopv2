@@ -26,6 +26,8 @@
     --radius: 0.5rem;
     --font-display: 'Outfit', sans-serif;
     --font-sans: 'Inter Tight', sans-serif;
+    --sky-400: #38bdf8;
+    --sky-500: #0ea5e9;
   }
 
   .dark {
@@ -48,6 +50,8 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+    --sky-400: #38bdf8;
+    --sky-500: #0ea5e9;
   }
   .theme {
     --color-hightlight-light: #DADBF8;
@@ -80,6 +84,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
   }
 }
