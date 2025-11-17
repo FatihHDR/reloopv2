@@ -10,7 +10,6 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 		scene: THREE.Scene;
 		camera: THREE.PerspectiveCamera;
 		renderer: THREE.WebGLRenderer;
-		particles: THREE.Points[];
 		animationId: number;
 		count: number;
 	} | null>(null);
@@ -48,8 +47,6 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 
 		container.appendChild(renderer.domElement);
 
-		// Create particles
-		const particles: THREE.Points[] = [];
 		const positions: number[] = [];
 		const colors: number[] = [];
 
@@ -87,7 +84,7 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 		scene.add(points);
 
 		let count = 0;
-		let animationId: number;
+		let animationId = 0;
 
 		// Animation function
 		const animate = () => {
@@ -144,7 +141,6 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 			scene,
 			camera,
 			renderer,
-			particles: [points],
 			animationId,
 			count,
 		};
