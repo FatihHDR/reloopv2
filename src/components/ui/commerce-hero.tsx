@@ -207,7 +207,6 @@ export function CommerceHero() {
             {/* Tech Stack Marquee */}
             <section className="container px-4 md:px-6 mx-auto max-w-7xl mt-16 md:mt-20">
                 <div className="text-center space-y-4">
-                    <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">Built With</p>
                     <h3 className="text-2xl md:text-3xl font-semibold text-foreground">
                         Trusted tools powering the ReLoop experience
                     </h3>
