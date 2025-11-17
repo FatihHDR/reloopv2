@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { NavBar } from "./tubelight-navbar";
 import { OfferCarousel, type Offer } from "./offer-carousel";
 import { CircularTestimonials } from "./circular-testimonials";
+import { DottedSurface } from "../dotted-surface";
 
 const categories = [
     {
@@ -148,8 +149,9 @@ export function CommerceHero() {
             {/* Hero Section */}
             <div className="container px-4 md:px-6 mx-auto max-w-7xl mt-16 md:mt-20">
                 <div className="bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl relative overflow-hidden">
+                    <DottedSurface className="absolute inset-0 z-0 rounded-3xl" />
                     <motion.section
-                        className="w-full px-6 md:px-12 py-20 md:py-28"
+                        className="w-full px-6 md:px-12 py-20 md:py-28 relative"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -199,7 +201,7 @@ export function CommerceHero() {
             </div>
 
             {/* Categories Section */}
-            <div className="container px-4 md:px-6 mx-auto max-w-7xl mt-16 md:mt-20">
+            <div className="container px-4 md:px-6 mx-auto max-w-7xl mt-16 md:mt-20" id="categories">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -209,7 +211,7 @@ export function CommerceHero() {
                     <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                         Shop by Category
                     </h2>
-                    <p className="text-muted-foreground">
+                    <p className="text-sm md:text-base text-muted-foreground">
                         Explore our curated collections
                     </p>
                 </motion.div>
@@ -223,7 +225,7 @@ export function CommerceHero() {
                             transition={{ duration: 0.6, delay: 0.3 + index * 0.1, ease: "easeOut" }}
                         >
                             <a href={category.href} className="absolute inset-0 z-20">
-                                <h2 className="text-center text-2xl sm:text-3xl md:text-4xl lg:text-[clamp(1.5rem,4vw,2.5rem)] font-bold relative z-10 text-primary my-2 sm:my-4 group-hover:text-primary/90 transition-colors duration-300">
+                                <h2 className="text-center text-xl sm:text-2xl md:text-2xl font-bold relative z-10 text-primary my-2 sm:my-4 group-hover:text-primary/90 transition-colors duration-300">
                                     {category.title}
                                 </h2>
                                 <div className="absolute inset-0 flex items-center justify-center p-4">
