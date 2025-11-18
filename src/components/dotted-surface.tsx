@@ -6,13 +6,7 @@ type DottedSurfaceProps = Omit<React.ComponentProps<'div'>, 'ref'>;
 
 export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const sceneRef = useRef<{
-		scene: THREE.Scene;
-		camera: THREE.PerspectiveCamera;
-		renderer: THREE.WebGLRenderer;
-		animationId: number;
-		count: number;
-	} | null>(null);
+	const animationFrameRef = useRef<number | null>(null);
 
 	useEffect(() => {
 		if (!containerRef.current) return;
@@ -84,11 +78,10 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 		scene.add(points);
 
 		let count = 0;
-		let animationId = 0;
 
 		// Animation function
 		const animate = () => {
-			animationId = requestAnimationFrame(animate);
+			animationFrameRef.current = requestAnimationFrame(animate);
 
 			const positionAttribute = geometry.attributes.position;
 			const positions = positionAttribute.array as Float32Array;
@@ -136,41 +129,29 @@ export function DottedSurface({ className, ...props }: DottedSurfaceProps) {
 		// Start animation
 		animate();
 
-		// Store references
-		sceneRef.current = {
-			scene,
-			camera,
-			renderer,
-			animationId,
-			count,
-		};
-
 		// Cleanup function
 		return () => {
 			window.removeEventListener('resize', handleResize);
+			if (animationFrameRef.current !== null) {
+				cancelAnimationFrame(animationFrameRef.current);
+			}
 
-			if (sceneRef.current) {
-				cancelAnimationFrame(sceneRef.current.animationId);
-
-				// Clean up Three.js objects
-				sceneRef.current.scene.traverse((object) => {
-					if (object instanceof THREE.Points) {
-						object.geometry.dispose();
-						if (Array.isArray(object.material)) {
-							object.material.forEach((material) => material.dispose());
-						} else {
-							object.material.dispose();
-						}
+			// Clean up Three.js objects
+			scene.traverse((object) => {
+				if (object instanceof THREE.Points) {
+					object.geometry.dispose();
+					if (Array.isArray(object.material)) {
+						object.material.forEach((material) => material.dispose());
+					} else {
+						object.material.dispose();
 					}
-				});
-
-				sceneRef.current.renderer.dispose();
-
-				if (container && sceneRef.current.renderer.domElement) {
-					container.removeChild(
-						sceneRef.current.renderer.domElement,
-					);
 				}
+			});
+
+			renderer.dispose();
+
+			if (container && renderer.domElement.parentElement === container) {
+				container.removeChild(renderer.domElement);
 			}
 		};
 	}, []);

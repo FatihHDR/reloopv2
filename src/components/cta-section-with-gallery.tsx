@@ -1,13 +1,13 @@
 import * as React from "react"
-import { motion } from "motion/react"
+import { motion, type Transition } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
 interface GalleryGridCellProps extends React.ComponentPropsWithRef<typeof motion.div> {
   index: number
 }
-const SPRING_TRANSITION_CONFIG = {
-  type: "spring" as const,
+const SPRING_TRANSITION_CONFIG: Transition = {
+  type: "spring",
   stiffness: 100,
   damping: 16,
   mass: 0.75,
