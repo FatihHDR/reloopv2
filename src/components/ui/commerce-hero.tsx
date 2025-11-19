@@ -11,6 +11,7 @@ import { FeaturesSectionWithHoverEffects } from "./feature-section-with-hover-ef
 import StatsSection from "./stats-section";
 import CTASection from "./cta-section";
 import { MarqueeDemo } from "./marquee-demo";
+import InteractiveImageBentoGallery from "./bento-gallery";
 
 const categories = [
     {
@@ -102,6 +103,51 @@ const featuredProducts: Offer[] = [
         brandName: "Alex K.",
         promoCode: "55% OFF",
         href: "#",
+    },
+];
+
+const newArrivalGalleryItems = [
+    {
+        id: "soho-lamp",
+        title: "Soho Arc Lamp",
+        desc: "Sculptural brass lighting for modern lofts.",
+        url: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=900&auto=format&fit=crop",
+        span: "md:col-span-2 md:row-span-2",
+    },
+    {
+        id: "atelier-sofa",
+        title: "Atelier Linen Sofa",
+        desc: "Cloud-soft seating in oat beige.",
+        url: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&auto=format&fit=crop",
+        span: "md:row-span-1",
+    },
+    {
+        id: "ava-vase",
+        title: "Ava Ceramic Vase",
+        desc: "Hand-thrown statement vessel.",
+        url: "https://images.unsplash.com/photo-1503602642458-232111445657?w=800&auto=format&fit=crop",
+        span: "md:row-span-1",
+    },
+    {
+        id: "flux-chair",
+        title: "Flux Dining Chair",
+        desc: "Stackable walnut newcomer.",
+        url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop",
+        span: "md:row-span-2",
+    },
+    {
+        id: "studio-clock",
+        title: "Studio Wall Clock",
+        desc: "Minimal matte-black finish.",
+        url: "https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?w=900&auto=format&fit=crop",
+        span: "md:row-span-1",
+    },
+    {
+        id: "terrace-sideboard",
+        title: "Terrace Sideboard",
+        desc: "Reeded glass + oak combo.",
+        url: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=900&auto=format&fit=crop",
+        span: "md:col-span-2 md:row-span-1",
     },
 ];
 
@@ -259,6 +305,24 @@ export function CommerceHero() {
                     ))}
                 </div>
             </div>
+
+            {/* New Arrivals Bento Gallery */}
+            <section className="py-16 md:py-24">
+                <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                    >
+                        <InteractiveImageBentoGallery
+                            imageItems={newArrivalGalleryItems}
+                            title="New Arrival Spotlights"
+                            description="Freshly verified drops from our sellers. Drag to explore the curation, tap to expand the details."
+                        />
+                    </motion.div>
+                </div>
+            </section>
 
             {/* Featured Products Section */}
             <section className="bg-gradient-to-br from-muted/20 to-transparent py-20 md:py-28 mt-16 md:mt-24">
