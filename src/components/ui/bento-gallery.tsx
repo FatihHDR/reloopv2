@@ -122,10 +122,10 @@ const InteractiveImageBentoGallery: React.FC<
         style={{ opacity, y }}
         className="container mx-auto px-4 text-center"
       >
-        <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-3">
           {title}
         </h2>
-        <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+        <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
           {description}
         </p>
       </motion.div>
