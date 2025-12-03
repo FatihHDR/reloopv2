@@ -40,6 +40,8 @@ const navItems = [
     { name: "Shop", url: "#shop", icon: ShoppingBag },
     { name: "Categories", url: "#categories", icon: PackageSearch },
     { name: "About", url: "#about", icon: Info },
+
+    
 ];
 
 const featuredProducts: Offer[] = [
