@@ -38,10 +38,10 @@ const categories = [
 ];
 
 const navItems = [
-    { name: "Home", url: "#", icon: Home },
+    { name: "Home", url: "/", icon: Home },
     { name: "Shop", url: "#shop", icon: ShoppingBag },
     { name: "Categories", url: "#categories", icon: PackageSearch },
-    { name: "About", url: "#about", icon: Info },
+    { name: "About", url: "/about", icon: Info },
 ];
 
 const featuredProducts: Offer[] = [
