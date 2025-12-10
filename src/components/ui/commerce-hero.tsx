@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUpRight, Home, ShoppingBag, PackageSearch, Info, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "./button";
 import { motion } from "framer-motion";
 import { NavBar } from "./tubelight-navbar";
@@ -11,6 +12,7 @@ import { FeaturesSectionWithHoverEffects } from "./feature-section-with-hover-ef
 import StatsSection from "./stats-section";
 import CTASection from "./cta-section";
 import { MarqueeDemo } from "./marquee-demo";
+import InteractiveImageBentoGallery from "./bento-gallery";
 
 const categories = [
     {
@@ -36,10 +38,10 @@ const categories = [
 ];
 
 const navItems = [
-    { name: "Home", url: "#", icon: Home },
+    { name: "Home", url: "/", icon: Home },
     { name: "Shop", url: "#shop", icon: ShoppingBag },
     { name: "Categories", url: "#categories", icon: PackageSearch },
-    { name: "About", url: "#about", icon: Info },
+    { name: "About", url: "/about", icon: Info },
 ];
 
 const featuredProducts: Offer[] = [
@@ -105,6 +107,51 @@ const featuredProducts: Offer[] = [
     },
 ];
 
+const newArrivalGalleryItems = [
+    {
+        id: "soho-lamp",
+        title: "Soho Arc Lamp",
+        desc: "Sculptural brass lighting for modern lofts.",
+        url: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=900&auto=format&fit=crop",
+        span: "md:col-span-2 md:row-span-2",
+    },
+    {
+        id: "atelier-sofa",
+        title: "Atelier Linen Sofa",
+        desc: "Cloud-soft seating in oat beige.",
+        url: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&auto=format&fit=crop",
+        span: "md:row-span-1",
+    },
+    {
+        id: "ava-vase",
+        title: "Ava Ceramic Vase",
+        desc: "Hand-thrown statement vessel.",
+        url: "https://images.unsplash.com/photo-1503602642458-232111445657?w=800&auto=format&fit=crop",
+        span: "md:row-span-1",
+    },
+    {
+        id: "flux-chair",
+        title: "Flux Dining Chair",
+        desc: "Stackable walnut newcomer.",
+        url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop",
+        span: "md:row-span-2",
+    },
+    {
+        id: "studio-clock",
+        title: "Studio Wall Clock",
+        desc: "Minimal matte-black finish.",
+        url: "https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?w=900&auto=format&fit=crop",
+        span: "md:row-span-1",
+    },
+    {
+        id: "terrace-sideboard",
+        title: "Terrace Sideboard",
+        desc: "Reeded glass + oak combo.",
+        url: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=900&auto=format&fit=crop",
+        span: "md:col-span-2 md:row-span-1",
+    },
+];
+
 const customerTestimonials = [
     {
         quote: "I found an amazing vintage chair at 60% off! The seller was honest about its condition, and it's become my favorite piece of furniture. ReLoop makes sustainable shopping so easy!",
@@ -132,18 +179,20 @@ export function CommerceHero() {
             {/* Header with Logo and Login Button */}
             <div className="container px-4 md:px-6 mx-auto max-w-7xl">
                 <header className="flex items-center justify-between pt-6 pb-4">
-                    <a href="#" className="text-2xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                    <Link to="/" className="text-2xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                         ReLoop_
-                    </a>
-                    <Button
-                        variant="secondary"
-                        className="cursor-pointer bg-primary-foreground p-0 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
-                    >
-                        <span className="pl-4 py-2 text-sm font-medium">Log In</span>
-                        <div className="rounded-full flex items-center justify-center m-auto bg-background w-10 h-10 ml-2 group-hover:scale-110 transition-transform duration-300">
-                            <ArrowUpRight className="w-5 h-5" />
-                        </div>
-                    </Button>
+                    </Link>
+                    <Link to="/login">
+                        <Button
+                            variant="secondary"
+                            className="cursor-pointer bg-primary-foreground p-0 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+                        >
+                            <span className="pl-4 py-2 text-sm font-medium">Log In</span>
+                            <div className="rounded-full flex items-center justify-center m-auto bg-background w-10 h-10 ml-2 group-hover:scale-110 transition-transform duration-300">
+                                <ArrowUpRight className="w-5 h-5" />
+                            </div>
+                        </Button>
+                    </Link>
                 </header>
 
                 {/* Tubelight Navigation Bar */}
@@ -206,10 +255,13 @@ export function CommerceHero() {
 
             {/* Tech Stack Marquee */}
             <section className="container px-4 md:px-6 mx-auto max-w-7xl mt-16 md:mt-20">
-                <div className="text-center space-y-4">
-                    <h3 className="text-2xl md:text-3xl font-semibold text-foreground">
+                <div className="text-center space-y-3">
+                    <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
                         Trusted tools powering the ReLoop experience
                     </h3>
+                    <p className="text-lg text-muted-foreground">
+                        Built with modern technologies you can trust
+                    </p>
                 </div>
                 <MarqueeDemo />
             </section>
@@ -259,6 +311,24 @@ export function CommerceHero() {
                     ))}
                 </div>
             </div>
+
+            {/* New Arrivals Bento Gallery */}
+            <section className="py-16 md:py-24">
+                <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                    >
+                        <InteractiveImageBentoGallery
+                            imageItems={newArrivalGalleryItems}
+                            title="New Arrival Spotlights"
+                            description="Freshly verified drops from our sellers. Drag to explore the curation, tap to expand the details."
+                        />
+                    </motion.div>
+                </div>
+            </section>
 
             {/* Featured Products Section */}
             <section className="bg-gradient-to-br from-muted/20 to-transparent py-20 md:py-28 mt-16 md:mt-24">
