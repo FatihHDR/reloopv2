@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Navigation, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function AddAddressPage() {
     const [formData, setFormData] = useState({
@@ -68,25 +69,26 @@ export default function AddAddressPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-background font-sans">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <header className="border-b border-border sticky top-0 z-50 backdrop-blur-md bg-background/80">
             <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
+                <Link to="/profile/edit">
                 <button 
-                    onClick={() => window.history.back()}
-                    className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    className="w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
                 >
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                 </button>
-                <h1 className="text-xl font-bold">Add New Address</h1>
+                </Link>
+                <h1 className="text-xl font-bold text-foreground">Add New Address</h1>
                 </div>
                 <button 
                 onClick={handleSave}
-                className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+                className="px-6 py-2 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"
                 >
                 Save
                 </button>
@@ -96,17 +98,17 @@ export default function AddAddressPage() {
 
         <div className="max-w-4xl mx-auto px-6 py-8">
             {/* Address Label */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Address Label</h2>
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-6 mb-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Address Label</h2>
             <div className="flex flex-wrap gap-3">
                 {['Home', 'Office', 'Apartment'].map((label) => (
                 <button
                     key={label}
                     onClick={() => setFormData({ ...formData, label })}
-                    className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
+                    className={`px-6 py-2 rounded-2xl text-sm font-medium transition-colors ${
                     formData.label === label
-                        ? 'bg-black text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-foreground hover:bg-secondary/80'
                     }`}
                 >
                     {label}
@@ -118,18 +120,18 @@ export default function AddAddressPage() {
                 value={formData.label && !['Home', 'Kos', 'Apartment'].includes(formData.label) ? formData.label : ''}
                 onChange={handleInputChange}
                 placeholder="Other (type here)"
-                className="px-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-black"
+                className="px-4 py-2 border border-border bg-background rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 />
             </div>
             </div>
 
             {/* Contact Information */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Contact Information</h2>
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-6 mb-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Contact Information</h2>
             <div className="space-y-4">
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Recipient Name <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                    Recipient Name <span className="text-destructive">*</span>
                 </label>
                 <input
                     type="text"
@@ -137,12 +139,12 @@ export default function AddAddressPage() {
                     value={formData.recipientName}
                     onChange={handleInputChange}
                     placeholder="Enter recipient name"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-3 border border-border bg-background rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 />
                 </div>
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                    Phone Number <span className="text-destructive">*</span>
                 </label>
                 <input
                     type="tel"
@@ -150,15 +152,15 @@ export default function AddAddressPage() {
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
                     placeholder="Enter phone number"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-3 border border-border bg-background rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 />
                 </div>
             </div>
             </div>
 
             {/* Address Details */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Address Details</h2>
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-6 mb-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">Address Details</h2>
             <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -244,7 +246,7 @@ export default function AddAddressPage() {
                     onChange={handleInputChange}
                     placeholder="Street name, building number, floor, etc."
                     rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black resize-none"
+                    className="w-full px-4 py-3 border border-border bg-background rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground resize-none"
                 />
                 </div>
 
@@ -266,23 +268,23 @@ export default function AddAddressPage() {
 
             {/* Map Container */}
             <div className="relative mb-4">
-                <div className="w-full h-64 bg-gray-100 rounded-xl overflow-hidden relative">
+                <div className="w-full h-64 bg-secondary/30 border border-border rounded-2xl overflow-hidden relative">
                 {/* Placeholder Map - In real app, use Google Maps or Leaflet */}
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                    <MapPin size={48} className="text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-600 text-sm">Interactive Map</p>
-                    <p className="text-gray-500 text-xs mt-1">Lat: {mapLocation.lat}, Lng: {mapLocation.lng}</p>
+                    <MapPin size={48} className="text-muted-foreground mx-auto mb-2" />
+                    <p className="text-foreground text-sm font-medium">Interactive Map</p>
+                    <p className="text-muted-foreground text-xs mt-1">Lat: {mapLocation.lat}, Lng: {mapLocation.lng}</p>
                     </div>
                 </div>
                 {/* Pin Marker in center */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-full">
-                    <MapPin size={40} className="text-red-500 fill-red-500" />
+                    <MapPin size={40} className="text-primary fill-primary" />
                 </div>
                 </div>
                 <button
                 onClick={() => setShowMap(!showMap)}
-                className="mt-3 w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm flex items-center justify-center space-x-2"
+                className="mt-3 w-full px-4 py-2 bg-secondary text-foreground rounded-2xl hover:bg-secondary/80 transition-colors text-sm flex items-center justify-center space-x-2 font-medium"
                 >
                 <Search size={16} />
                 <span>Search Location on Map</span>
@@ -290,17 +292,17 @@ export default function AddAddressPage() {
             </div>
 
             {/* Set as Primary */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-6 mb-6">
             <label className="flex items-center justify-between cursor-pointer">
                 <div>
-                <p className="font-semibold text-gray-900">Set as primary address</p>
-                <p className="text-sm text-gray-500 mt-1">This address will be used as your default shipping address</p>
+                <p className="font-semibold text-foreground">Set as primary address</p>
+                <p className="text-sm text-muted-foreground mt-1">This address will be used as your default shipping address</p>
                 </div>
                 <input
                 type="checkbox"
                 checked={formData.isPrimary}
                 onChange={(e) => setFormData({ ...formData, isPrimary: e.target.checked })}
-                className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black"
+                className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
                 />
             </label>
             </div>
@@ -308,7 +310,7 @@ export default function AddAddressPage() {
             {/* Save Button (Mobile) */}
             <button 
             onClick={handleSave}
-            className="w-full md:hidden px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+            className="w-full md:hidden px-6 py-3 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"
             >
             Save Address
             </button>

@@ -6,8 +6,11 @@ import SignInPageDemo from "./components/ui/sign-in-demo";
 import RegisterPageDemo from "./components/ui/register-demo";
 import { PageNotFoundDemo } from "./components/ui/404-page-demo";
 
-// Lazy load About page for faster initial load
+// Lazy load pages for faster initial load
 const AboutPageDemo = lazy(() => import("./components/ui/about-page-demo"));
+const ProfilePageDemo = lazy(() => import("./components/ui/profile-demo"));
+const ProfileEditPageDemo = lazy(() => import("./components/ui/profile-edit-demo"));
+const ProfileAddressAddPageDemo = lazy(() => import("./components/ui/profile-address-add-demo"));
 
 // Loading component
 const PageLoader = () => (
@@ -33,6 +36,21 @@ function App() {
       <Route path="/about" element={
         <Suspense fallback={<PageLoader />}>
           <AboutPageDemo />
+        </Suspense>
+      } />
+      <Route path="/profile" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfilePageDemo />
+        </Suspense>
+      } />
+      <Route path="/profile/edit" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileEditPageDemo />
+        </Suspense>
+      } />
+      <Route path="/profile/address/add" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileAddressAddPageDemo />
         </Suspense>
       } />
       {/* 404 - Catch all unmatched routes */}

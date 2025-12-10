@@ -1,5 +1,5 @@
-import React from 'react';
-import { User, Heart, Settings, UserCog } from 'lucide-react';
+import { User, Heart, Settings, UserCog, Recycle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function ProfilePage() {
     // Sample user data
@@ -80,11 +80,10 @@ export default function ProfilePage() {
     ];
 
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
+        <div className="min-h-screen bg-background font-sans">
         {/* Profile Section */}
-        <div className="max-w-7xl mx-auto px-6 py-12">
-            <div className="bg-white rounded-2xl overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
             {/* Profile Header */}
             <div className="p-8">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
@@ -106,11 +105,12 @@ export default function ProfilePage() {
                     
                     {/* User Info */}
                     <div>
-                    <h1 className="text-3xl font-bold text-gray-900">{userData.name}</h1>
-                    <p className="text-gray-600 mt-1">{userData.email}</p>
+                    <h1 className="text-3xl font-bold text-foreground">{userData.name}</h1>
+                    <p className="text-muted-foreground mt-1">{userData.email}</p>
                     <div className="flex items-center space-x-3 mt-2">
-                        <p className="text-sm text-gray-500">Member since {userData.joinDate}</p>
-                        <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                        <p className="text-sm text-muted-foreground">Member since {userData.joinDate}</p>
+                        <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full flex items-center gap-1">
+                        <Recycle className="w-3 h-3" />
                         {userData.role}
                         </span>
                     </div>
@@ -119,39 +119,40 @@ export default function ProfilePage() {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col space-y-3">
+                    <Link to="/profile/edit">
                     <button 
-                    onClick={() => alert('Navigate to Edit Profile page')}
-                    className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors flex items-center justify-center space-x-2"
+                    className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 font-medium"
                     >
                     <Settings size={18} />
                     <span>Edit Profile</span>
                     </button>
+                    </Link>
                     <button 
-                    onClick={() => alert('Change role to Admin')}
-                    className="px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-full hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                    onClick={() => alert('Change role to Seller')}
+                    className="px-6 py-3 bg-secondary border border-border text-foreground rounded-2xl hover:bg-secondary/80 transition-colors flex items-center justify-center space-x-2 font-medium"
                     >
                     <UserCog size={18} />
-                    <span>Change Role as Admin</span>
+                    <span>Become a Seller</span>
                     </button>
                 </div>
                 </div>
             </div>
 
             {/* Wishlist Section */}
-            <div className="border-t border-gray-200">
+            <div className="border-t border-border">
                 <div className="p-8">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
-                    <Heart size={28} className="text-gray-700" />
-                    <h2 className="text-2xl font-bold text-gray-900">My Wishlist</h2>
+                    <Heart size={28} className="text-primary fill-primary/20" />
+                    <h2 className="text-2xl font-bold text-foreground">My Wishlist</h2>
                     </div>
-                    <span className="text-sm text-gray-600">{featuredProducts.length} items</span>
+                    <span className="text-sm text-muted-foreground">{featuredProducts.length} items</span>
                 </div>
 
                 {featuredProducts.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {featuredProducts.map((item) => (
-                        <div key={item.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1">
+                        <div key={item.id} className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 group">
                         <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
                         {featuredProducts[item.id - 1]?.imageSrc ? (
                             <img 
@@ -164,11 +165,11 @@ export default function ProfilePage() {
                         )}
                     </div>
                         <div className="p-4">
-                            <h3 className="font-semibold text-gray-900 text-lg">{item.title}</h3>
-                            <p className="text-sm text-gray-500 mt-1">{item.description}</p>
+                            <h3 className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">{item.title}</h3>
+                            <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
                             <div className="flex items-center justify-between mt-4">
-                            <span className="text-xl font-bold text-gray-900">By {item.brandName}</span>
-                            <button className="px-4 py-2 bg-black text-white text-sm rounded-full hover:bg-gray-800 transition-colors">
+                            <span className="text-sm font-medium text-muted-foreground">By {item.brandName}</span>
+                            <button className="px-4 py-2 bg-primary text-primary-foreground text-sm rounded-full hover:bg-primary/90 transition-colors">
                                 View Item
                             </button>
                             </div>
@@ -178,8 +179,9 @@ export default function ProfilePage() {
                     </div>
                 ) : (
                     <div className="text-center py-16">
-                    <Heart size={64} className="text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Your wishlist is empty</h3>
+                    <Heart size={64} className="text-muted-foreground/30 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-foreground mb-2">Your wishlist is empty</h3>
+                    <p className="text-muted-foreground">Start adding items you love!</p>
                     </div>
                 )}
                 </div>

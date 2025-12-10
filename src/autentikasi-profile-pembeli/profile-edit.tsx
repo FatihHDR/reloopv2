@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Camera, X, Mail, Phone, Plus, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function EditProfilePage() {
     const [profileData, setProfileData] = useState<{
@@ -62,25 +63,26 @@ export default function EditProfilePage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-background font-sans">
         {/* Header */}
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <header className="border-b border-border sticky top-0 z-50 backdrop-blur-md bg-background/80">
             <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
+                    <Link to="/profile">
                     <button 
-                    onClick={() => window.history.back()} 
-                    className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                    className="w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
                     >
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                     </button>
-                <h1 className="text-xl font-bold">Edit Profile</h1>
+                    </Link>
+                <h1 className="text-xl font-bold text-foreground">Edit Profile</h1>
                 </div>
                 <button 
                 onClick={handleSave}
-                className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+                className="px-6 py-2 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"
                 >
                 Save Changes
                 </button>
@@ -90,8 +92,8 @@ export default function EditProfilePage() {
 
         <div className="max-w-4xl mx-auto px-6 py-8">
             {/* Profile Photo Section */}
-            <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-6">Profile Photo</h2>
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-8 mb-6">
+            <h2 className="text-lg font-bold text-foreground mb-6">Profile Photo</h2>
             <div className="flex items-center space-x-6">
                 <div className="relative">
                 <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
@@ -107,8 +109,8 @@ export default function EditProfilePage() {
                     </div>
                     )}
                 </div>
-                <label className="absolute bottom-0 right-0 w-10 h-10 bg-black rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors">
-                    <Camera size={20} className="text-white" />
+                <label className="absolute bottom-0 right-0 w-10 h-10 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
+                    <Camera size={20} className="text-primary-foreground" />
                     <input 
                     type="file" 
                     accept="image/*" 
@@ -118,9 +120,9 @@ export default function EditProfilePage() {
                 </label>
                 </div>
                 <div className="flex-1">
-                <p className="text-gray-600 text-sm mb-3">Upload a new profile photo or remove the current one</p>
+                <p className="text-muted-foreground text-sm mb-3">Upload a new profile photo or remove the current one</p>
                 <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
-                    <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors text-sm">
+                    <button className="px-4 py-2 bg-secondary text-foreground rounded-2xl hover:bg-secondary/80 transition-colors text-sm font-medium">
                     Upload Photo
                     <input 
                         type="file" 
@@ -132,7 +134,7 @@ export default function EditProfilePage() {
                     {profileData.profileImage && (
                     <button 
                         onClick={handleRemoveImage}
-                        className="px-4 py-2 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-colors text-sm"
+                        className="px-4 py-2 bg-destructive/10 text-destructive rounded-2xl hover:bg-destructive/20 transition-colors text-sm font-medium"
                     >
                         Remove Photo
                     </button>
@@ -143,93 +145,94 @@ export default function EditProfilePage() {
             </div>
 
             {/* Personal Information */}
-            <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h2>
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-8 mb-6">
+            <h2 className="text-lg font-bold text-foreground mb-6">Personal Information</h2>
             <div className="space-y-5">
                 <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
                 <input 
                     type="text"
                     value={profileData.name}
                     onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full px-4 py-3 border border-border rounded-2xl bg-background focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
                 />
                 </div>
             </div>
             </div>
 
             {/* Contact Information */}
-            <div className="bg-white rounded-2xl shadow-sm p-8 mb-6">
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-8 mb-6">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-gray-900">Contact Information</h2>
-                <button className="text-sm text-blue-600 hover:text-blue-700 flex items-center space-x-1">
+                <h2 className="text-lg font-bold text-foreground">Contact Information</h2>
+                <button className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 font-medium">
                 <Plus size={16} />
                 <span>Add Contact</span>
                 </button>
             </div>
             <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-4 border border-gray-200 rounded-xl">
-                <Mail size={20} className="text-gray-400" />
+                <div className="flex items-center space-x-4 p-4 border border-border rounded-2xl bg-background/50">
+                <Mail size={20} className="text-muted-foreground" />
                 <div className="flex-1">
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium text-gray-900">{profileData.email}</p>
+                    <p className="text-sm text-muted-foreground">Email</p>
+                    <p className="font-medium text-foreground">{profileData.email}</p>
                 </div>
-                <button className="text-sm text-gray-600 hover:text-gray-900">Edit</button>
+                <button className="text-sm text-primary hover:text-primary/80 font-medium">Edit</button>
                 </div>
-                <div className="flex items-center space-x-4 p-4 border border-gray-200 rounded-xl">
-                <Phone size={20} className="text-gray-400" />
+                <div className="flex items-center space-x-4 p-4 border border-border rounded-2xl bg-background/50">
+                <Phone size={20} className="text-muted-foreground" />
                 <div className="flex-1">
-                    <p className="text-sm text-gray-500">Phone Number</p>
-                    <p className="font-medium text-gray-900">{profileData.phone}</p>
+                    <p className="text-sm text-muted-foreground">Phone Number</p>
+                    <p className="font-medium text-foreground">{profileData.phone}</p>
                 </div>
-                <button className="text-sm text-gray-600 hover:text-gray-900">Edit</button>
+                <button className="text-sm text-primary hover:text-primary/80 font-medium">Edit</button>
                 </div>
             </div>
             </div>
 
             {/* Address Section */}
-            <div className="bg-white rounded-2xl shadow-sm p-8">
+            <div className="bg-card border border-border rounded-3xl shadow-sm p-8">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-gray-900">Addresses</h2>
+                <h2 className="text-lg font-bold text-foreground">Addresses</h2>
+                <Link to="/profile/address/add">
                 <button 
-                onClick={() => setShowAddressModal(true)}
-                className="text-sm text-blue-600 hover:text-blue-700 flex items-center space-x-1"
+                className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 font-medium"
                 >
                 <Plus size={16} />
                 <span>Add New Address</span>
                 </button>
+                </Link>
             </div>
             <div className="space-y-4">
                 {addresses.map((address) => (
                 <div 
                     key={address.id}
-                    className={`p-5 border-2 rounded-xl transition-all ${
+                    className={`p-5 border-2 rounded-2xl transition-all ${
                     address.isPrimary 
-                        ? 'border-black bg-gray-50' 
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-primary bg-primary/5' 
+                        : 'border-border hover:border-border/80'
                     }`}
                 >
                     <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center space-x-2">
-                        <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                        <span className="px-3 py-1 bg-secondary text-foreground text-xs font-medium rounded-full">
                         {address.label}
                         </span>
                         {address.isPrimary && (
-                        <span className="px-3 py-1 bg-black text-white text-xs font-medium rounded-full flex items-center space-x-1">
+                        <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full flex items-center space-x-1">
                             <Check size={12} />
                             <span>Primary</span>
                         </span>
                         )}
                     </div>
-                    <button className="text-sm text-gray-600 hover:text-gray-900">Edit</button>
+                    <button className="text-sm text-primary hover:text-primary/80 font-medium">Edit</button>
                     </div>
-                    <p className="font-semibold text-gray-900 mb-1">{address.name}</p>
-                    <p className="text-sm text-gray-600 mb-1">{address.phone}</p>
-                    <p className="text-sm text-gray-600 mb-4">{address.fullAddress}</p>
+                    <p className="font-semibold text-foreground mb-1">{address.name}</p>
+                    <p className="text-sm text-muted-foreground mb-1">{address.phone}</p>
+                    <p className="text-sm text-muted-foreground mb-4">{address.fullAddress}</p>
                     {!address.isPrimary && (
                     <button 
                         onClick={() => setPrimaryAddress(address.id)}
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        className="text-sm text-primary hover:text-primary/80 font-medium"
                     >
                         Set as Primary Address
                     </button>
@@ -242,24 +245,25 @@ export default function EditProfilePage() {
 
         {/* Add Address Modal (Placeholder) */}
         {showAddressModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl max-w-2xl w-full p-8">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-card border border-border rounded-3xl max-w-2xl w-full p-8">
                 <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Add New Address</h2>
+                <h2 className="text-xl font-bold text-foreground">Add New Address</h2>
                 <button 
                     onClick={() => setShowAddressModal(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-muted-foreground hover:text-foreground"
                 >
                     <X size={24} />
                 </button>
                 </div>
-                <p className="text-gray-600 mb-6">This will open the Add Address page (to be created separately)</p>
+                <p className="text-muted-foreground mb-6">This will redirect to the Add Address page</p>
+                <Link to="/profile/address/add">
                 <button 
-                onClick={() => setShowAddressModal(false)}
-                className="w-full px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors"
+                className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"
                 >
-                Close
+                Go to Add Address
                 </button>
+                </Link>
             </div>
             </div>
         )}
