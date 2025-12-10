@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Home, ShoppingBag, PackageSearch, Info, Search } from "lucide-react";
+import { ArrowUpRight, Home, ShoppingBag, PackageSearch, Info, Search, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./button";
 import { motion } from "framer-motion";
@@ -42,6 +42,7 @@ const navItems = [
     { name: "Shop", url: "#shop", icon: ShoppingBag },
     { name: "Categories", url: "#categories", icon: PackageSearch },
     { name: "About", url: "/about", icon: Info },
+    { name: "Profile", url: "/profile", icon: User },
 ];
 
 const featuredProducts: Offer[] = [
