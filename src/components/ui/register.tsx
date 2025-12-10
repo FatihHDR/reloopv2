@@ -35,16 +35,16 @@ interface RegisterPageProps {
 // --- SUB-COMPONENTS ---
 
 const GlassInputWrapper = ({ children }: { children: React.ReactNode }) => (
-  <div className="rounded-2xl border border-border bg-foreground/5 backdrop-blur-sm transition-colors focus-within:border-violet-400/70 focus-within:bg-violet-500/10">
+  <div className="rounded-2xl border border-border bg-foreground/5 backdrop-blur-sm transition-colors focus-within:border-primary/70 focus-within:bg-primary/5">
     {children}
   </div>
 );
 
 const TestimonialCard = ({ testimonial, delay }: { testimonial: Testimonial, delay: string }) => (
-  <div className={`animate-testimonial ${delay} flex items-start gap-3 rounded-3xl bg-card/40 dark:bg-zinc-800/40 backdrop-blur-xl border border-white/10 p-5 w-64`}>
+  <div className={`animate-testimonial ${delay} flex items-start gap-3 rounded-3xl bg-background/60 backdrop-blur-xl border border-border/50 shadow-lg p-5 w-64`}>
     <img src={testimonial.avatarSrc} className="h-10 w-10 object-cover rounded-2xl" alt="avatar" />
     <div className="text-sm leading-snug">
-      <p className="flex items-center gap-1 font-medium">{testimonial.name}</p>
+      <p className="flex items-center gap-1 font-medium text-foreground">{testimonial.name}</p>
       <p className="text-muted-foreground">{testimonial.handle}</p>
       <p className="mt-1 text-foreground/80">{testimonial.text}</p>
     </div>
@@ -66,7 +66,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <div className="h-[100dvh] flex flex-col md:flex-row font-geist w-[100dvw]">
+    <div className="h-[100dvh] flex flex-col md:flex-row font-sans w-[100dvw]">
       {/* Left column: register form */}
       <section className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
@@ -118,9 +118,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
                   <input type="checkbox" name="terms" className="custom-checkbox mt-0.5" required />
                   <span className="text-foreground/90">
                     I agree to the{" "}
-                    <a href="#" className="text-violet-400 hover:underline transition-colors">Terms of Service</a>
+                    <a href="#" className="text-primary hover:underline transition-colors">Terms of Service</a>
                     {" "}and{" "}
-                    <a href="#" className="text-violet-400 hover:underline transition-colors">Privacy Policy</a>
+                    <a href="#" className="text-primary hover:underline transition-colors">Privacy Policy</a>
                   </span>
                 </label>
               </div>
@@ -141,7 +141,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
             </button>
 
             <p className="animate-element animate-delay-1100 text-center text-sm text-muted-foreground">
-              Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onSignIn?.(); }} className="text-violet-400 hover:underline transition-colors">Sign In</a>
+              Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onSignIn?.(); }} className="text-primary hover:underline transition-colors">Sign In</a>
             </p>
           </div>
         </div>

@@ -54,7 +54,18 @@ const RegisterPageDemo = () => {
   }
 
   return (
-    <div className="bg-background text-foreground">
+    <div className="bg-background text-foreground min-h-screen">
+      {/* Header with ReLoop Logo */}
+      <div className="absolute top-0 left-0 right-0 z-50">
+        <div className="container px-4 md:px-6 mx-auto max-w-7xl">
+          <header className="flex items-center justify-between pt-6 pb-4">
+            <a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }} className="text-2xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent cursor-pointer">
+              ReLoop_
+            </a>
+          </header>
+        </div>
+      </div>
+      
       <RegisterPage
         title={
           <span className="font-light text-foreground tracking-tighter">

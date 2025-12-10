@@ -199,7 +199,3 @@
   @apply h-4 w-4 rounded border border-border bg-background cursor-pointer;
   @apply checked:bg-primary checked:border-primary;
 }
-
-.font-geist {
-  font-family: var(--font-sans);
-}
