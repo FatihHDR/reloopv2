@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import TocDialog from '@/components/ui/terms-conditions';
+import PrivacyPolicyDialog from '@/components/ui/privacy-policy';
 
 // --- HELPER COMPONENTS (ICONS) ---
 
@@ -114,13 +116,17 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
               </div>
 
               <div className="animate-element animate-delay-700 flex items-start text-sm">
-                <label className="flex items-start gap-3 cursor-pointer">
+                <label className="flex items-start gap-3">
                   <input type="checkbox" name="terms" className="custom-checkbox mt-0.5" required />
                   <span className="text-foreground/90">
                     I agree to the{" "}
-                    <a href="#" className="text-primary hover:underline transition-colors">Terms of Service</a>
+                    <span className="inline-block">
+                      <TocDialog />
+                    </span>
                     {" "}and{" "}
-                    <a href="#" className="text-primary hover:underline transition-colors">Privacy Policy</a>
+                    <span className="inline-block">
+                      <PrivacyPolicyDialog />
+                    </span>
                   </span>
                 </label>
               </div>

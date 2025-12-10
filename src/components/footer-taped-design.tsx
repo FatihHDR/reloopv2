@@ -1,4 +1,6 @@
 import { Twitter, Instagram, Facebook } from 'lucide-react';
+import TocDialog from '@/components/ui/terms-conditions';
+import PrivacyPolicyDialog from '@/components/ui/privacy-policy';
 
 const tape = <svg xmlns="http://www.w3.org/2000/svg" width="95" height="80" viewBox="0 0 95 80" fill="none">
 <path d="M1 45L70.282 5L88.282 36.1769L19 76.1769L1 45Z" fill="#222222"/>
@@ -73,10 +75,10 @@ export const Component = () => {
           <p className="whitespace-nowrap">
             ©{currentYear} ReLoop. All rights reserved.
           </p>
-          <div className="flex flex-row gap-4">
-            <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-primary transition-colors">Cookie Policy</a>
+          <div className="flex flex-row gap-4 items-center [&_button]:text-sm [&_button]:text-muted-foreground [&_button]:hover:text-foreground [&_button]:no-underline">
+            <PrivacyPolicyDialog />
+            <TocDialog />
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Cookie Policy</a>
           </div>
         </div>
 
