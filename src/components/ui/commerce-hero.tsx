@@ -1,10 +1,8 @@
 "use client";
 
-import { ArrowUpRight, Home, ShoppingBag, PackageSearch, Info, Search, ShoppingCart, Package } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowUpRight, Search } from "lucide-react";
 import { Button } from "./button";
 import { motion } from "framer-motion";
-// NavBar removed from here — layout provides consistent navigation
 import { OfferCarousel, type Offer } from "./offer-carousel";
 import { CircularTestimonials } from "./circular-testimonials";
 import { DottedSurface } from "../dotted-surface";
@@ -36,8 +34,6 @@ const categories = [
         href: "#",
     },
 ];
-
-// navItems moved to layout
 
 const featuredProducts: Offer[] = [
     {
@@ -171,9 +167,9 @@ const customerTestimonials = [
 export function CommerceHero() {
     return (
         <div className="w-full relative">
-            {/* Main hero container (header and nav provided by Layout) */}
+            {/* Hero Section */}
             <div className="container px-4 md:px-6 mx-auto max-w-7xl mt-8 md:mt-12">
-                <div className="bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl relative overflow-hidden">
+                    <div className="bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl relative overflow-hidden">
                     <DottedSurface />
                     <motion.section
                         className="w-full px-6 md:px-12 py-20 md:py-28 relative z-10"

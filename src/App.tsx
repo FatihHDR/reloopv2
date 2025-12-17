@@ -3,6 +3,11 @@ import { Routes, Route } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CommerceHero } from "./components/ui/commerce-hero";
 import Layout from "./components/ui/layout";
+import CartPage from "./components/ui/CartPage";
+import TransactionPage from "./components/ui/TransactionPage";
+import PaymentConfirmationPage from "./components/ui/PaymentConfirmationPage";
+import TransactionHistoryPage from "./components/ui/TransactionHistoryPage";
+import ProductReviewPage from "./components/ui/ProductReviewPage";
 import SignInPageDemo from "./components/ui/sign-in-demo";
 import RegisterPageDemo from "./components/ui/register-demo";
 import { PageNotFoundDemo } from "./components/ui/404-page-demo";
@@ -36,6 +41,11 @@ function App() {
             </Suspense>
           }
         />
+        <Route path="cart" element={<CartPage />} />
+        <Route path="checkout" element={<TransactionPage />} />
+        <Route path="order-confirmation" element={<PaymentConfirmationPage />} />
+        <Route path="my-orders" element={<TransactionHistoryPage />} />
+        <Route path="write-review" element={<ProductReviewPage />} />
         <Route path="shop" element={<ShopPage />} />
         <Route path="product/:productId" element={<ProductDetail />} />
         <Route path="partner/:partnerId" element={<PartnerDetail />} />
