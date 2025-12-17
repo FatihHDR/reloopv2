@@ -6,6 +6,8 @@ import SignInPageDemo from "./components/ui/sign-in-demo";
 import RegisterPageDemo from "./components/ui/register-demo";
 import { PageNotFoundDemo } from "./components/ui/404-page-demo";
 import ShopPage from "./components/ui/shop";
+import ProductDetail from "./components/ui/product-detail";
+import PartnerDetail from "./components/ui/partner-detail";
 
 // Lazy load About page for faster initial load
 const AboutPageDemo = lazy(() => import("./components/ui/about-page-demo"));
@@ -34,6 +36,8 @@ function App() {
           }
         />
         <Route path="shop" element={<ShopPage />} />
+        <Route path="product/:productId" element={<ProductDetail />} />
+        <Route path="partner/:partnerId" element={<PartnerDetail />} />
       </Route>
 
       <Route path="/login" element={<SignInPageDemo />} />

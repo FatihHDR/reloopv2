@@ -26,6 +26,8 @@ export function NavBar({ items, className }: NavBarProps) {
     const currentPath = location.pathname
     if (currentPath === "/about") return "About"
     if (currentPath.startsWith("/shop")) return "Shop"
+    if (currentPath.startsWith("/product")) return "Shop" // Product detail juga dianggap bagian dari Shop
+    if (currentPath.startsWith("/partner")) return "Shop"
     if (currentPath.startsWith("/categories")) return "Categories"
     return "Home"
   }

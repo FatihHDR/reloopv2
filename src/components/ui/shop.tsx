@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { Button } from "./button"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, Sliders, X } from "lucide-react"
+import heroImg from "../../assets/assetZamZam/360_F_526999539_uDArwR72n2CRh9cynglZ5pF48O6DeYLA.jpg"
 
 type Product = {
   id: number
@@ -103,7 +104,7 @@ export default function ShopPage() {
         {/* Hero / banner inspired by Preloved but matching our theme */}
         <motion.section initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl overflow-hidden mb-8">
           <div className="relative rounded-2xl bg-gradient-to-r from-primary/40 to-accent/20">
-            <img src="https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=1600&auto=format&fit=crop" alt="hero" className="w-full h-56 object-cover opacity-90" />
+            <img src={heroImg} alt="hero" className="w-full h-56 object-cover opacity-90" />
             <div className="absolute inset-0 p-8 flex flex-col justify-center">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">ReLoop tempat terpercaya jual beli barang second</h2>
               <p className="text-sm text-white/90 max-w-xl mb-4">Temukan mitra terpercaya dan barang secondhand berkualitas yang hemat, ramah lingkungan, dan unik.</p>
@@ -124,15 +125,22 @@ export default function ShopPage() {
           <h3 className="text-lg font-semibold mb-3">Mitra Unggulan</h3>
           <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-border">
             {partnersData.map((p) => (
-              <motion.button key={p.id} whileHover={{ scale: 1.03 }} onClick={() => setSelectedPartner(p)} className={`flex-shrink-0 w-44 p-3 rounded-xl bg-muted/30 border border-border ${selectedPartner?.id === p.id ? "ring-2 ring-primary" : ""}`}>
-                <div className="flex items-center gap-3">
-                  <img src={p.logo} alt={p.name} className="w-12 h-12 rounded-md object-cover" />
-                  <div className="flex flex-col text-left">
-                    <div className="font-medium">{p.name}</div>
-                    <div className="text-xs text-muted-foreground">{p.description}</div>
+              <div key={p.id} className="flex gap-2">
+                <motion.button whileHover={{ scale: 1.03 }} onClick={() => setSelectedPartner(p)} className={`flex-shrink-0 w-44 p-3 rounded-xl bg-muted/30 border border-border ${selectedPartner?.id === p.id ? "ring-2 ring-primary" : ""}`}>
+                  <div className="flex items-center gap-3">
+                    <img src={p.logo} alt={p.name} className="w-12 h-12 rounded-md object-cover" />
+                    <div className="flex flex-col text-left">
+                      <div className="font-medium">{p.name}</div>
+                      <div className="text-xs text-muted-foreground">{p.description}</div>
+                    </div>
                   </div>
-                </div>
-              </motion.button>
+                </motion.button>
+                <Link to={`/partner/${p.id}`}>
+                  <Button size="sm" variant="outline" className="flex-shrink-0 h-full">
+                    Lihat Toko
+                  </Button>
+                </Link>
+              </div>
             ))}
           </div>
         </section>
@@ -235,12 +243,14 @@ export default function ShopPage() {
           <h3 className="text-xl font-semibold mb-4">Sedang Populer</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {popularItems.map((prd) => (
-              <motion.div key={prd.id} whileHover={{ scale: 1.02 }} className="bg-background/60 border border-border rounded-lg p-2">
-                <img src={prd.image} alt={prd.title} className="w-full h-28 object-cover rounded-md mb-2" />
-                <div className="text-sm font-medium">{prd.title}</div>
-                <div className="text-xs text-muted-foreground">{prd.partner?.name}</div>
-                <div className="mt-2 font-semibold">{prd.priceText}</div>
-              </motion.div>
+              <Link key={prd.id} to={`/product/${prd.id}`}>
+                <motion.div whileHover={{ scale: 1.02 }} className="bg-background/60 border border-border rounded-lg p-2 cursor-pointer hover:shadow-md transition-shadow">
+                  <img src={prd.image} alt={prd.title} className="w-full h-28 object-cover rounded-md mb-2" />
+                  <div className="text-sm font-medium">{prd.title}</div>
+                  <div className="text-xs text-muted-foreground">{prd.partner?.name}</div>
+                  <div className="mt-2 font-semibold">{prd.priceText}</div>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </section>
@@ -250,17 +260,19 @@ export default function ShopPage() {
           <h3 className="text-xl font-semibold mb-4">Pilihan Acak Untukmu</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {randomItems.map((prd) => (
-              <motion.div key={prd.id} whileHover={{ scale: 1.02 }} className="bg-background/60 border border-border rounded-lg overflow-hidden">
-                <img src={prd.image} alt={prd.title} className="w-full h-40 object-cover" />
-                <div className="p-3">
-                  <div className="font-semibold">{prd.title}</div>
-                  <div className="text-xs text-muted-foreground">{prd.partner?.name}</div>
-                  <div className="mt-2 flex items-center justify-between">
-                    <div className="font-medium">{prd.priceText}</div>
-                    <Button size="sm">Lihat</Button>
+              <Link key={prd.id} to={`/product/${prd.id}`}>
+                <motion.div whileHover={{ scale: 1.02 }} className="bg-background/60 border border-border rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
+                  <img src={prd.image} alt={prd.title} className="w-full h-40 object-cover" />
+                  <div className="p-3">
+                    <div className="font-semibold">{prd.title}</div>
+                    <div className="text-xs text-muted-foreground">{prd.partner?.name}</div>
+                    <div className="mt-2 flex items-center justify-between">
+                      <div className="font-medium">{prd.priceText}</div>
+                      <Button size="sm">Lihat</Button>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </section>
@@ -277,8 +289,11 @@ export default function ShopPage() {
                     <img src={selectedPartner.logo} alt={selectedPartner.name} className="w-20 h-20 rounded-md object-cover" />
                     <div className="font-medium">{selectedPartner.name}</div>
                     <div className="text-sm text-muted-foreground">{selectedPartner.description}</div>
-                    <div className="mt-2 w-full">
-                      <Button size="sm" onClick={() => setSelectedPartner(null)}>Lihat Semua Mitra</Button>
+                    <div className="mt-2 w-full flex gap-2 flex-col">
+                      <Link to={`/partner/${selectedPartner.id}`} className="w-full">
+                        <Button size="sm" className="w-full">Lihat Toko</Button>
+                      </Link>
+                      <Button size="sm" variant="outline" onClick={() => setSelectedPartner(null)}>Lihat Semua Mitra</Button>
                     </div>
                   </div>
                 ) : (
@@ -291,22 +306,24 @@ export default function ShopPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <AnimatePresence>
                   {filteredProducts.map((prd) => (
-                    <motion.div key={prd.id} layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} className="bg-background/60 border border-border rounded-lg overflow-hidden">
-                      <img src={prd.image} alt={prd.title} className="w-full h-44 object-cover" />
-                      <div className="p-3">
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="font-semibold">{prd.title}</div>
-                            <div className="text-xs text-muted-foreground">{prd.condition} • {prd.partner?.name}</div>
+                    <Link key={prd.id} to={`/product/${prd.id}`}>
+                      <motion.div layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} className="bg-background/60 border border-border rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
+                        <img src={prd.image} alt={prd.title} className="w-full h-44 object-cover" />
+                        <div className="p-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <div className="font-semibold">{prd.title}</div>
+                              <div className="text-xs text-muted-foreground">{prd.condition} • {prd.partner?.name}</div>
+                            </div>
+                            <img src={prd.partner?.logo} alt={prd.partner?.name} className="w-10 h-10 rounded-md object-cover" />
                           </div>
-                          <img src={prd.partner?.logo} alt={prd.partner?.name} className="w-10 h-10 rounded-md object-cover" />
+                          <div className="mt-3 flex items-center justify-between">
+                            <div className="font-medium">{prd.priceText}</div>
+                            <Button size="sm">Lihat</Button>
+                          </div>
                         </div>
-                        <div className="mt-3 flex items-center justify-between">
-                          <div className="font-medium">{prd.priceText}</div>
-                          <Button size="sm">Lihat</Button>
-                        </div>
-                      </div>
-                    </motion.div>
+                      </motion.div>
+                    </Link>
                   ))}
                 </AnimatePresence>
               </div>
