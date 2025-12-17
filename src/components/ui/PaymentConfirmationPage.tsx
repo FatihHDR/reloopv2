@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Upload, X } from 'lucide-react';
-import './PaymentConfirmationPage.css';
+import { Upload, X, CheckCircle, Clock } from 'lucide-react';
+import { SharedHeader } from '../shared-header';
+import { Button } from './button';
 
 interface CartItem {
   id: string;
@@ -68,23 +69,7 @@ const PaymentConfirmationPage = () => {
 
   const handleRemoveFile = () => setUploadedFile(null);
 
-  const pageVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1 },
-    exit: { opacity: 0 },
-  };
-
-  const containerVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0, transition: { staggerChildren: 0.1 } },
-  };
-
-  const itemVariants = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  };
-
-  const paymentMethodLabels: { [key: string]: string } = {
+  const paymentMethodLabels: { [key: string]: string} = {
     bca: 'Bank BCA',
     bri: 'Bank BRI',
     bni: 'Bank BNI',
@@ -97,197 +82,242 @@ const PaymentConfirmationPage = () => {
   };
 
   return (
-    <motion.div
-      className="payment-confirmation-page"
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{ duration: 0.5 }}
-    >
-      {/* Header */}
-      <motion.div className="confirmation-header" variants={itemVariants}>
-        <h1>Payment Confirmation</h1>
-      </motion.div>
-
-      {/* Main Layout */}
-      <motion.div
-        className="confirmation-layout"
-        variants={containerVariants}
-        initial="initial"
-        animate="animate"
-      >
-        {/* Left Column: Status + Upload */}
-        <motion.div className="left-column" variants={itemVariants}>
-          {/* Status */}
-          <motion.div className="card status-section" variants={itemVariants}>
-            <div className="status-badge">
-              {status === 'pending' ? (
-                <>
-                  <span className="status-icon pending">⏳</span>
-                  <div className="status-text">
-                    <h2>Waiting for Payment</h2>
-                    <p>Please upload your payment proof to confirm</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <span className="status-icon success">✅</span>
-                  <div className="status-text">
-                    <h2>Payment Successful</h2>
-                    <p>Your transaction has been confirmed</p>
-                  </div>
-                </>
-              )}
-            </div>
-          </motion.div>
-
-          {/* Upload */}
-          {status === 'pending' && (
-            <motion.div className="card upload-section" variants={itemVariants}>
-              <h2>Upload Payment Proof</h2>
-              <p className="section-description">
-                Upload a screenshot or image of your payment transfer proof
-              </p>
-
-              <div
-                className={`drop-zone ${dragActive ? 'active' : ''} ${uploadedFile ? 'has-file' : ''}`}
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-              >
-                {uploadedFile ? (
-                  <div className="file-preview">
-                    <div className="file-icon">📄</div>
-                    <div className="file-info">
-                      <p className="file-name">{uploadedFile.name}</p>
-                      <p className="file-size">{(uploadedFile.size / 1024).toFixed(2)} KB</p>
-                    </div>
-                    <button className="remove-file-btn" onClick={handleRemoveFile} type="button">
-                      <X size={18} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="drop-zone-content">
-                    <Upload size={32} />
-                    <p>Drag and drop your payment proof here</p>
-                    <p className="or-text">or</p>
-                    <label className="file-input-label">
-                      Choose File
-                      <input
-                        type="file"
-                        accept="image/*,.pdf"
-                        onChange={handleFileInput}
-                        style={{ display: 'none' }}
-                      />
-                    </label>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
+    <div className="min-h-screen bg-background">
+      <SharedHeader />
+      
+      <div className="container px-4 md:px-6 mx-auto max-w-7xl py-8">
+        {/* Page Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold mb-2">Payment Confirmation</h1>
+          <p className="text-muted-foreground">Upload your payment proof to complete the order</p>
         </motion.div>
 
-        {/* Right Column: Summary + Buttons */}
-        <motion.div className="right-column" variants={itemVariants}>
-          <motion.div className="card order-summary" variants={itemVariants}>
-            <h2>Order Summary</h2>
-
-            {/* Order Number */}
-            <div className="info-group">
-              <span className="label">Order Number</span>
-              <span className="value">{orderNumber}</span>
-            </div>
-
-            {/* Buyer Info */}
-            <div className="info-section">
-              <h3>Buyer Information</h3>
-              <div className="info-grid">
-                <div className="info-item full-width">
-                  <span className="label">Full Name</span>
-                  <span className="value">{formData?.name || '-'}</span>
-                </div>
-                <div className="info-item full-width">
-                  <span className="label">Phone</span>
-                  <span className="value">{formData?.phone || '-'}</span>
-                </div>
-                <div className="info-item full-width">
-                  <span className="label">Address</span>
-                  <span className="value">{formData?.address || '-'}</span>
-                </div>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left Section - Status & Upload */}
+          <motion.div
+            className="lg:col-span-2 space-y-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+          >
+            {/* Status Card */}
+            <div className={`border rounded-2xl p-6 ${status === 'success' ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}`}>
+              <div className="flex items-center gap-4">
+                {status === 'pending' ? (
+                  <>
+                    <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-yellow-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-yellow-900">Waiting for Payment</h2>
+                      <p className="text-yellow-700">Please upload your payment proof to confirm</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-green-900">Payment Successful!</h2>
+                      <p className="text-green-700">Your transaction has been confirmed</p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
-            {/* Payment Method */}
-            <div className="info-section">
-              <h3>Payment Method</h3>
-              <div className="info-group">
-                <span className="label">Method</span>
-                <span className="value">{paymentMethodLabels[paymentMethod] || paymentMethod}</span>
-              </div>
-            </div>
+            {/* Upload Section */}
+            {status === 'pending' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="bg-card border border-border rounded-2xl p-6 shadow-sm"
+              >
+                <h2 className="text-2xl font-bold mb-4">Upload Payment Proof</h2>
+                <p className="text-muted-foreground mb-6">
+                  Upload a screenshot or image of your payment transfer proof
+                </p>
 
-            {/* Items */}
-            <div className="info-section">
-              <h3>Order Items</h3>
-              {selectedItems && selectedItems.length > 0 ? (
-                <div className="items-list">
-                  {selectedItems.map((item: CartItem) => (
-                    <div key={item.id} className="item-row">
-                      <div className="item-details">
-                        <p className="item-name">{item.name}</p>
-                        <p className="item-store">{item.store}</p>
+                <div
+                  className={`border-2 border-dashed rounded-xl p-8 transition-all ${
+                    dragActive ? 'border-primary bg-accent/50' : 'border-border'
+                  } ${uploadedFile ? 'bg-accent/20' : 'bg-background'}`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  {uploadedFile ? (
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                          <Upload className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">{uploadedFile.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {(uploadedFile.size / 1024).toFixed(2)} KB
+                          </p>
+                        </div>
                       </div>
-                      <div className="item-quantity">x{item.quantity}</div>
-                      <div className="item-price">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleRemoveFile}
+                        className="rounded-full"
+                      >
+                        <X className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                      <p className="text-lg font-medium mb-2">Drag and drop your payment proof here</p>
+                      <p className="text-sm text-muted-foreground mb-4">or</p>
+                      <label className="inline-block">
+                        <Button variant="outline" className="rounded-full" asChild>
+                          <span>Choose File</span>
+                        </Button>
+                        <input
+                          type="file"
+                          accept="image/*,.pdf"
+                          onChange={handleFileInput}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* Right Section - Summary */}
+          <motion.div
+            className="lg:col-span-1"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            <div className="bg-gradient-to-br from-accent/20 via-accent/10 to-primary/5 border border-border rounded-2xl p-6 sticky top-6 space-y-6">
+              <h2 className="text-2xl font-bold">Order Summary</h2>
+
+              {/* Order Number */}
+              <div className="p-3 bg-background/50 rounded-lg">
+                <span className="text-sm text-muted-foreground">Order Number</span>
+                <p className="font-mono font-bold text-primary mt-1">{orderNumber}</p>
+              </div>
+
+              {/* Buyer Info */}
+              <div className="space-y-3">
+                <h3 className="font-semibold">Buyer Information</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between p-2 bg-background/30 rounded-lg">
+                    <span className="text-muted-foreground">Name</span>
+                    <span className="font-medium">{formData?.name || '-'}</span>
+                  </div>
+                  <div className="flex justify-between p-2 bg-background/30 rounded-lg">
+                    <span className="text-muted-foreground">Phone</span>
+                    <span className="font-medium">{formData?.phone || '-'}</span>
+                  </div>
+                  <div className="p-2 bg-background/30 rounded-lg">
+                    <span className="text-muted-foreground text-sm">Address</span>
+                    <p className="font-medium mt-1">{formData?.address || '-'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Method */}
+              <div className="p-3 bg-background/50 rounded-lg">
+                <span className="text-sm text-muted-foreground">Payment Method</span>
+                <p className="font-medium mt-1">{paymentMethodLabels[paymentMethod] || paymentMethod}</p>
+              </div>
+
+              {/* Items */}
+              <div className="space-y-3">
+                <h3 className="font-semibold">Order Items</h3>
+                <div className="space-y-2">
+                  {selectedItems?.map((item: CartItem) => (
+                    <div key={item.id} className="flex justify-between text-sm p-2 bg-background/30 rounded-lg">
+                      <div className="flex-1">
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-xs text-muted-foreground">{item.store}</p>
+                      </div>
+                      <span className="text-muted-foreground">x{item.quantity}</span>
+                      <span className="font-medium ml-2">
                         Rp{(item.price * item.quantity).toLocaleString('id-ID')}
-                      </div>
+                      </span>
                     </div>
                   ))}
                 </div>
-              ) : (
-                <p className="no-items">No items in order</p>
-              )}
-            </div>
+              </div>
 
-            {/* Price Breakdown */}
-            <div className="price-breakdown">
-              <h3>Price Breakdown</h3>
-              <div className="price-row">
-                <span>Subtotal</span>
-                <span>Rp{subtotal.toLocaleString('id-ID')}</span>
+              {/* Price Breakdown */}
+              <div className="space-y-3 pt-4 border-t border-border">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="font-medium">Rp{subtotal.toLocaleString('id-ID')}</span>
+                </div>
+                <div className="flex justify-between text-green-600">
+                  <span>Discount (10%)</span>
+                  <span className="font-medium">-Rp{discount.toLocaleString('id-ID')}</span>
+                </div>
+                <div className="flex justify-between text-lg font-bold pt-3 border-t border-border">
+                  <span>Total Payment</span>
+                  <span>Rp{total?.toLocaleString('id-ID') || 'Rp0'}</span>
+                </div>
               </div>
-              <div className="price-row discount">
-                <span>Discount (10%)</span>
-                <span>-Rp{discount.toLocaleString('id-ID')}</span>
-              </div>
-              <div className="price-row total">
-                <span>Total Payment</span>
-                <span>Rp{total?.toLocaleString('id-ID') || 'Rp0'}</span>
+
+              {/* Action Buttons */}
+              <div className="space-y-3 pt-4">
+                {status === 'pending' && (
+                  <>
+                    <Button
+                      onClick={handleConfirm}
+                      disabled={!uploadedFile}
+                      className="w-full bg-primary text-primary-foreground rounded-full py-6 text-base font-semibold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Confirm Payment
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleCancel}
+                      className="w-full rounded-full py-6 text-base font-semibold"
+                    >
+                      Cancel Transaction
+                    </Button>
+                  </>
+                )}
+                {status === 'success' && (
+                  <>
+                    <Button
+                      onClick={() => navigate('/my-orders')}
+                      className="w-full bg-primary text-primary-foreground rounded-full py-6 text-base font-semibold hover:shadow-lg transition-all duration-300"
+                    >
+                      View My Orders
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate('/')}
+                      className="w-full rounded-full py-6 text-base font-semibold"
+                    >
+                      Back to Home
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
-
-            {/* Action Buttons */}
-            <motion.div className="action-buttons" variants={itemVariants}>
-              <button className="btn btn-secondary" onClick={status === 'success' ? () => navigate('/') : handleCancel}>
-                {status === 'success' ? 'Back to Home' : 'Cancel Transaction'}
-              </button>
-              {status === 'pending' && (
-                <button className="btn btn-primary" onClick={handleConfirm} disabled={!uploadedFile}>
-                  Confirm Payment
-                </button>
-              )}
-              {status === 'success' && (
-                <button className="btn btn-primary" onClick={() => navigate('/my-orders')}>
-                  View My Orders
-                </button>
-              )}
-            </motion.div>
           </motion.div>
-        </motion.div>
-      </motion.div>
-    </motion.div>
+        </div>
+      </div>
+    </div>
   );
 };
 
