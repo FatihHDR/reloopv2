@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
-import './TransactionPage.css';
+import { CreditCard, User, Phone, MapPin } from 'lucide-react';
+import { SharedHeader } from '../shared-header';
+import { Button } from './button';
+import { Input } from './input';
+import { Label } from './label';
 
 interface CartItem {
   id: string;
@@ -55,7 +58,7 @@ const TransactionPage = () => {
 
   const handleProceed = () => {
     if (isFormValid) {
-      navigate('/payment-confirmation', { 
+      navigate('/order-confirmation', { 
         state: { 
           orderNumber, 
           selectedItems, 
@@ -97,7 +100,7 @@ const TransactionPage = () => {
         <button className="back-button" onClick={() => navigate('/cart')}>
           <ArrowLeft size={20} />
         </button>
-        <h1>Transaction</h1>
+        <h1>Checkout</h1>
       </div>
 
       <div className="transaction-layout">

@@ -286,10 +286,10 @@ const TransactionHistoryPage = () => {
                           </span>
                         <button 
                           className="btn-review"
-                          onClick={() => navigate('/review', { state: { product: item } })}
+                          onClick={() => navigate('/write-review', { state: { product: item } })}
                         >
                           <Star size={14} />
-                          Review
+                          Write Review
                         </button>
                         </div>
                       </div>

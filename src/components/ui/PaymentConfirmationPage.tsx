@@ -279,8 +279,8 @@ const PaymentConfirmationPage = () => {
                 </button>
               )}
               {status === 'success' && (
-                <button className="btn btn-primary" onClick={() => navigate('/history')}>
-                  View History
+                <button className="btn btn-primary" onClick={() => navigate('/my-orders')}>
+                  View My Orders
                 </button>
               )}
             </motion.div>

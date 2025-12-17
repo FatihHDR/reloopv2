@@ -35,10 +35,10 @@ function App() {
         </motion.div>
       } />
       <Route path="/cart" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><CartPage /></motion.div>} />
-      <Route path="/transaction" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><TransactionPage /></motion.div>} />
-      <Route path="/payment-confirmation" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><PaymentConfirmationPage /></motion.div>} />
-      <Route path="/history" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><TransactionHistoryPage /></motion.div>} />
-      <Route path="/review" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><ProductReviewPage /></motion.div>} />
+      <Route path="/checkout" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><TransactionPage /></motion.div>} />
+      <Route path="/order-confirmation" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><PaymentConfirmationPage /></motion.div>} />
+      <Route path="/my-orders" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><TransactionHistoryPage /></motion.div>} />
+      <Route path="/write-review" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><ProductReviewPage /></motion.div>} />
       <Route path="/login" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><SignInPageDemo /></motion.div>} />
       <Route path="/register" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><RegisterPageDemo /></motion.div>} />
       <Route path="/about" element={
