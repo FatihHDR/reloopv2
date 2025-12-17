@@ -1,10 +1,11 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { CommerceHero } from "./components/ui/commerce-hero";
-import { Component as Footer } from "./components/footer-taped-design";
+import Layout from "./components/ui/layout";
 import SignInPageDemo from "./components/ui/sign-in-demo";
 import RegisterPageDemo from "./components/ui/register-demo";
 import { PageNotFoundDemo } from "./components/ui/404-page-demo";
+import ShopPage from "./components/ui/shop";
 
 // Lazy load About page for faster initial load
 const AboutPageDemo = lazy(() => import("./components/ui/about-page-demo"));
@@ -22,19 +23,22 @@ const PageLoader = () => (
 function App() {
   return (
     <Routes>
-      <Route path="/" element={
-        <>
-          <CommerceHero />
-          <Footer />
-        </>
-      } />
+      <Route element={<Layout />}>
+        <Route index element={<CommerceHero />} />
+        <Route
+          path="about"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AboutPageDemo />
+            </Suspense>
+          }
+        />
+        <Route path="shop" element={<ShopPage />} />
+      </Route>
+
       <Route path="/login" element={<SignInPageDemo />} />
       <Route path="/register" element={<RegisterPageDemo />} />
-      <Route path="/about" element={
-        <Suspense fallback={<PageLoader />}>
-          <AboutPageDemo />
-        </Suspense>
-      } />
+
       {/* 404 - Catch all unmatched routes */}
       <Route path="*" element={<PageNotFoundDemo />} />
     </Routes>
