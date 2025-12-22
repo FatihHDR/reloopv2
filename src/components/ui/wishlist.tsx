@@ -1,7 +1,8 @@
 import { User, Heart, Settings, UserCog, Recycle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {Component} from "../footer-taped-design";
 
-export default function ProfilePage() {
+export default function WishlistPage() {
     // Sample user data
     const userData = {
         name: "Sarah Johnson",
@@ -82,75 +83,20 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-background font-sans">
         {/* Profile Section */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
-            {/* Profile Header */}
-            <div className="p-8">
-                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-                <div className="flex items-center sm:items-start sm:flex-row flex-col sm:space-x-6 space-x-0 space-y-4 sm:space-y-0">
-                    {/* Avatar */}
-                    <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden shadow-lg">
-                    {userData.src ? (
-                        <img 
-                        src={userData.src} 
-                        alt={userData.name}
-                        className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                        <User size={40} className="text-gray-400" />
-                        </div>
-                    )}
-                    </div>
-                    
-                    {/* User Info */}
-                    <div>
-                    <h1 className="text-3xl font-bold text-foreground">{userData.name}</h1>
-                    <p className="text-muted-foreground mt-1">{userData.email}</p>
-                    <div className="flex items-center space-x-3 mt-2">
-                        <p className="text-sm text-muted-foreground">Member since {userData.joinDate}</p>
-                        <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full flex items-center gap-1">
-                        <Recycle className="w-3 h-3" />
-                        {userData.role}
-                        </span>
-                    </div>
-                    </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col space-y-3">
-                    <Link to="/profile/edit">
-                    <button 
-                    className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 font-medium"
-                    >
-                    <Settings size={18} />
-                    <span>Edit Profile</span>
-                    </button>
-                    </Link>
-                    <button 
-                    onClick={() => alert('Change role to Seller')}
-                    className="px-6 py-3 bg-secondary border border-border text-foreground rounded-2xl hover:bg-secondary/80 transition-colors flex items-center justify-center space-x-2 font-medium"
-                    >
-                    <UserCog size={18} />
-                    <span>Become a Seller</span>
-                    </button>
-                </div>
-                </div>
-            </div>
-
+        <div className="max-w-7xl mx-auto">
             {/* Wishlist Section */}
-            <div className="border-t border-border">
+            <div>
                 <div className="p-8">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center space-x-3">
-                    <Heart size={28} className="text-primary fill-primary/20" />
+                    <Heart size={28} className="text-primary" />
                     <h2 className="text-2xl font-bold text-foreground">My Wishlist</h2>
                     </div>
                     <span className="text-sm text-muted-foreground">{featuredProducts.length} items</span>
                 </div>
 
                 {featuredProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
                     {featuredProducts.map((item) => (
                         <div key={item.id} className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1 group">
                         <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
@@ -166,9 +112,9 @@ export default function ProfilePage() {
                     </div>
                         <div className="p-4">
                             <h3 className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">{item.title}</h3>
-                            <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+                            <p className="text-sm text-muted-foreground mt-1 hidden sm:block">{item.description}</p>
                             <div className="flex items-center justify-between mt-4">
-                            <span className="text-sm font-medium text-muted-foreground">By {item.brandName}</span>
+                            <span className="text-sm font-medium text-muted-foreground hidden sm:block">By {item.brandName}</span>
                             <button className="px-4 py-2 bg-primary text-primary-foreground text-sm rounded-full hover:bg-primary/90 transition-colors">
                                 View Item
                             </button>
@@ -186,10 +132,10 @@ export default function ProfilePage() {
                 )}
                 </div>
             </div>
-            </div>
         </div>
 
         {/* Footer */}
+        <Component />;
         </div>
     );
 }

@@ -8,7 +8,7 @@ import { PageNotFoundDemo } from "./components/ui/404-page-demo";
 
 // Lazy load pages for faster initial load
 const AboutPageDemo = lazy(() => import("./components/ui/about-page-demo"));
-const ProfilePageDemo = lazy(() => import("./components/ui/profile-demo"));
+const WishlistDemo = lazy(() => import("./components/ui/wishlist-demo"));
 const ProfileEditPageDemo = lazy(() => import("./components/ui/profile-edit-demo"));
 const ProfileAddressAddPageDemo = lazy(() => import("./components/ui/profile-address-add-demo"));
 
@@ -38,17 +38,17 @@ function App() {
           <AboutPageDemo />
         </Suspense>
       } />
-      <Route path="/profile" element={
+      <Route path="/wishlist" element={
         <Suspense fallback={<PageLoader />}>
-          <ProfilePageDemo />
+          <WishlistDemo />
         </Suspense>
       } />
-      <Route path="/profile/edit" element={
+      <Route path="/profile" element={
         <Suspense fallback={<PageLoader />}>
           <ProfileEditPageDemo />
         </Suspense>
       } />
-      <Route path="/profile/address/add" element={
+      <Route path="/profile/address" element={
         <Suspense fallback={<PageLoader />}>
           <ProfileAddressAddPageDemo />
         </Suspense>
