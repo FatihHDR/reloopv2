@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Search, Home, ShoppingBag, PackageSearch, Info } from "lucide-react";
+import { ArrowUpRight, Search } from "lucide-react";
 import { Button } from "./button";
 import { motion } from "framer-motion";
 import { OfferCarousel, type Offer } from "./offer-carousel";

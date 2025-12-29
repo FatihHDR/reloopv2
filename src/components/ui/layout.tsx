@@ -1,4 +1,4 @@
-import React from "react"
+
 import { Link, Outlet } from "react-router-dom"
 import { ArrowUpRight, Home, ShoppingBag, PackageSearch, Info, ShoppingCart, Package } from "lucide-react"
 import { NavBar } from "./tubelight-navbar"
