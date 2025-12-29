@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils"
 
 interface GalleryGridCellProps extends React.ComponentPropsWithRef<typeof motion.div> {
   index: number
+
+  
 }
 const SPRING_TRANSITION_CONFIG: Transition = {
   type: "spring",
