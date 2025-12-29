@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Search } from "lucide-react";
+import { ArrowUpRight, Search, Home, ShoppingBag, PackageSearch, Info } from "lucide-react";
 import { Button } from "./button";
 import { motion } from "framer-motion";
 import { OfferCarousel, type Offer } from "./offer-carousel";
@@ -33,15 +33,6 @@ const categories = [
         image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=400&fit=crop",
         href: "#",
     },
-];
-
-const navItems = [
-    { name: "Home", url: "#", icon: Home },
-    { name: "Shop", url: "#shop", icon: ShoppingBag },
-    { name: "Categories", url: "#categories", icon: PackageSearch },
-    { name: "About", url: "#about", icon: Info },
-
-
 ];
 
 const featuredProducts: Offer[] = [

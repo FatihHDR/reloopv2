@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { CreditCard, User, Phone, MapPin } from 'lucide-react';
+import { CreditCard, User } from 'lucide-react';
 import { SharedHeader } from '../shared-header';
 import { Button } from './button';
 import { Input } from './input';
@@ -58,21 +58,16 @@ const TransactionPage = () => {
 
   const handleProceed = () => {
     if (isFormValid) {
-      navigate('/order-confirmation', { 
-        state: { 
-          orderNumber, 
-          selectedItems, 
+      navigate('/order-confirmation', {
+        state: {
+          orderNumber,
+          selectedItems,
           total,
           formData,
           paymentMethod,
-        } 
+        }
       });
     }
-  };
-
-  const pageVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
   };
 
   const containerVariants = {
@@ -91,7 +86,7 @@ const TransactionPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <SharedHeader />
-      
+
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-8">
         {/* Page Title */}
         <motion.div
@@ -123,7 +118,7 @@ const TransactionPage = () => {
                 </div>
                 <h2 className="text-2xl font-bold">Buyer Information</h2>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="name">Full Name</Label>
@@ -171,7 +166,7 @@ const TransactionPage = () => {
                 </div>
                 <h2 className="text-2xl font-bold">Payment Method</h2>
               </div>
-              
+
               <div>
                 <Label htmlFor="payment">Select Payment Method</Label>
                 <select
@@ -236,7 +231,7 @@ const TransactionPage = () => {
               className="bg-gradient-to-br from-accent/20 via-accent/10 to-primary/5 border border-border rounded-2xl p-6 sticky top-6"
             >
               <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-              
+
               {/* Order Number */}
               <div className="mb-4 p-3 bg-background/50 rounded-lg">
                 <span className="text-sm text-muted-foreground">Order Number</span>

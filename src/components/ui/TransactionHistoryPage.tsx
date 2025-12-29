@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingBag, Star, CheckCircle, Clock, XCircle, Package } from 'lucide-react';
+import { X, ShoppingBag, Star, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { SharedHeader } from '../shared-header';
 import { Button } from './button';
@@ -111,7 +111,7 @@ const TransactionHistoryPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <SharedHeader />
-      
+
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-8">
         {/* Page Title */}
         <motion.div
