@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CreditCard, User } from 'lucide-react';
-import { SharedHeader } from '../shared-header';
+
 import { Button } from './button';
 import { Input } from './input';
 import { Label } from './label';
@@ -85,7 +85,7 @@ const TransactionPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SharedHeader />
+
 
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-8">
         {/* Page Title */}

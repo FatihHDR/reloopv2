@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Upload, X, CheckCircle, Clock } from 'lucide-react';
-import { SharedHeader } from '../shared-header';
+
 import { Button } from './button';
 
 interface CartItem {
@@ -69,7 +69,7 @@ const PaymentConfirmationPage = () => {
 
   const handleRemoveFile = () => setUploadedFile(null);
 
-  const paymentMethodLabels: { [key: string]: string} = {
+  const paymentMethodLabels: { [key: string]: string } = {
     bca: 'Bank BCA',
     bri: 'Bank BRI',
     bni: 'Bank BNI',
@@ -83,8 +83,8 @@ const PaymentConfirmationPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SharedHeader />
-      
+
+
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-8">
         {/* Page Title */}
         <motion.div
@@ -146,9 +146,8 @@ const PaymentConfirmationPage = () => {
                 </p>
 
                 <div
-                  className={`border-2 border-dashed rounded-xl p-8 transition-all ${
-                    dragActive ? 'border-primary bg-accent/50' : 'border-border'
-                  } ${uploadedFile ? 'bg-accent/20' : 'bg-background'}`}
+                  className={`border-2 border-dashed rounded-xl p-8 transition-all ${dragActive ? 'border-primary bg-accent/50' : 'border-border'
+                    } ${uploadedFile ? 'bg-accent/20' : 'bg-background'}`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
