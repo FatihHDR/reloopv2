@@ -15,8 +15,17 @@ import ShopPage from "./components/ui/shop";
 import ProductDetail from "./components/ui/product-detail";
 import PartnerDetail from "./components/ui/partner-detail";
 
-// Lazy load About page for faster initial load
+// Lazy load pages for faster initial load
 const AboutPageDemo = lazy(() => import("./components/ui/about-page-demo"));
+const WishlistDemo = lazy(() => import("./components/ui/wishlist-demo"));
+const ProfileEditPageDemo = lazy(() => import("./components/ui/profile-edit-demo"));
+const ProfileAddressesDemo = lazy(() => import("./components/ui/profile-addresses-demo"));
+const ProfileAddressAddPageDemo = lazy(() => import("./components/ui/profile-address-add-demo"));
+const ProfileOrdersDemo = lazy(() => import("./components/ui/profile-orders-demo"));
+const ProfilePaymentMethodsDemo = lazy(() => import("./components/ui/profile-payment-methods-demo"));
+const ProfileNotificationsDemo = lazy(() => import("./components/ui/profile-notifications-demo"));
+const ProfileSecurityDemo = lazy(() => import("./components/ui/profile-security-demo"));
+const ProfileSettingsDemo = lazy(() => import("./components/ui/profile-settings-demo"));
 
 // Loading component
 const PageLoader = () => (
@@ -53,7 +62,56 @@ function App() {
 
       <Route path="/login" element={<SignInPageDemo />} />
       <Route path="/register" element={<RegisterPageDemo />} />
-
+      <Route path="/about" element={
+        <Suspense fallback={<PageLoader />}>
+          <AboutPageDemo />
+        </Suspense>
+      } />
+      <Route path="/wishlist" element={
+        <Suspense fallback={<PageLoader />}>
+          <WishlistDemo />
+        </Suspense>
+      } />
+      <Route path="/profile" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileEditPageDemo />
+        </Suspense>
+      } />
+      <Route path="/addresses" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileAddressesDemo />
+        </Suspense>
+      } />
+      <Route path="/profile/address" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileAddressAddPageDemo />
+        </Suspense>
+      } />
+      <Route path="/orders" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileOrdersDemo />
+        </Suspense>
+      } />
+      <Route path="/payments" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfilePaymentMethodsDemo />
+        </Suspense>
+      } />
+      <Route path="/notifications" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileNotificationsDemo />
+        </Suspense>
+      } />
+      <Route path="/security" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileSecurityDemo />
+        </Suspense>
+      } />
+      <Route path="/settings" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProfileSettingsDemo />
+        </Suspense>
+      } />
       {/* 404 - Catch all unmatched routes */}
       <Route path="*" element={<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><PageNotFoundDemo /></motion.div>} />
     </Routes>
