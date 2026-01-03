@@ -53,6 +53,7 @@ export default function AddAddressPage() {
         { value: 'Office', icon: Building, description: 'Workplace address' },
         { value: 'Apartment', icon: Building2, description: 'Apartment or condo' },
     ];
+    
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
