@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronLeft, Bell, Mail, MessageSquare, Package, ShoppingBag as ShoppingBagIcon, Star, Home, ShoppingBag, PackageSearch, Info } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, Bell, Mail, MessageSquare, Package, Star, Home, ShoppingBag, PackageSearch, Info } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from './button';

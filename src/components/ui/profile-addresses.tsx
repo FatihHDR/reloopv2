@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronLeft, MapPin, Plus, Edit, Trash2, Star, Home as HomeIcon, Building, Building2, ShoppingBag, PackageSearch, Info, Home } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';

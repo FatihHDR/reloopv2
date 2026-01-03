@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronLeft, CreditCard, Plus, Trash2, Check, Home, ShoppingBag, PackageSearch, Info, Star, Shield } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -47,7 +47,6 @@ const mockPaymentMethods: PaymentMethod[] = [
 export default function PaymentMethodsPage() {
     const navigate = useNavigate();
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(mockPaymentMethods);
-    const [showAddModal, setShowAddModal] = useState(false);
 
     const handleSetPrimary = (id: string) => {
         setPaymentMethods(methods =>
@@ -98,7 +97,7 @@ export default function PaymentMethodsPage() {
                             </p>
                         </div>
                     </div>
-                    <Button onClick={() => setShowAddModal(true)} className="rounded-xl hidden md:flex">
+                    <Button onClick={() => navigate('/profile/address')} className="rounded-xl hidden md:flex">
                         <Plus size={16} className="mr-2" />
                         Add Payment
                     </Button>
@@ -136,7 +135,7 @@ export default function PaymentMethodsPage() {
                                 <p className="text-muted-foreground mb-6">
                                     Add a payment method to make checkout faster
                                 </p>
-                                <Button onClick={() => setShowAddModal(true)}>
+                                <Button onClick={() => navigate('/profile/address')}>
                                     <Plus size={16} className="mr-2" />
                                     Add Payment Method
                                 </Button>
@@ -244,7 +243,7 @@ export default function PaymentMethodsPage() {
                 {/* Add Button - Mobile */}
                 {paymentMethods.length > 0 && (
                     <Button
-                        onClick={() => setShowAddModal(true)}
+                        onClick={() => navigate('/profile/address')}
                         className="w-full rounded-xl py-6 mt-6 md:hidden text-base font-semibold"
                     >
                         <Plus size={18} className="mr-2" />

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation, Search } from 'lucide-react';
+import { MapPin, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AddAddressPage() {
@@ -46,26 +46,6 @@ export default function AddAddressPage() {
         console.log('Map Location:', mapLocation);
         alert('Address saved successfully!');
         // Navigate back or close
-    };
-
-    const handleUseCurrentLocation = () => {
-        if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-            setMapLocation({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-                address: "Current Location"
-            });
-            alert('Current location set!');
-            },
-            (error) => {
-            alert('Unable to get location: ' + error.message);
-            }
-        );
-        } else {
-        alert('Geolocation is not supported by your browser');
-        }
     };
 
     return (

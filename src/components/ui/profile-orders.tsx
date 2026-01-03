@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronLeft, Package, Search, Filter, Clock, CheckCircle2, XCircle, Truck, MapPin, Phone, ShoppingBag, PackageSearch, Info, Home, ChevronRight, Eye } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronLeft, Package, Search, Filter, Clock, CheckCircle2, XCircle, Truck, MapPin, ShoppingBag, PackageSearch, Info, Home, Eye } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './button';
