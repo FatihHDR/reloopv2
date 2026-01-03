@@ -17,7 +17,7 @@ export default function AddAddressPage() {
         isPrimary: false
     });
 
-    const [mapLocation, setMapLocation] = useState({
+    const [mapLocation] = useState({
         lat: -7.2575,
         lng: 112.7521,
         address: "Surabaya, Jawa Timur"

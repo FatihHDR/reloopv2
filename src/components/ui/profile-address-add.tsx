@@ -53,7 +53,7 @@ export default function AddAddressPage() {
         { value: 'Office', icon: Building, description: 'Workplace address' },
         { value: 'Apartment', icon: Building2, description: 'Apartment or condo' },
     ];
-    
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -272,7 +272,7 @@ export default function AddAddressPage() {
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 flex items-center gap-1">
+                                    <label className="text-sm font-medium mb-2 flex items-center gap-1">
                                         Recipient Name <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
@@ -305,7 +305,7 @@ export default function AddAddressPage() {
                                     </AnimatePresence>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium mb-2 flex items-center gap-1">
+                                    <label className="text-sm font-medium mb-2 flex items-center gap-1">
                                         Phone Number <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
