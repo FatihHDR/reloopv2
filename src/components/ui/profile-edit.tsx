@@ -73,7 +73,7 @@ export default function EditProfilePage() {
 
     const menuItems = [
         { icon: Package, label: "My Orders", href: "/orders", badge: "2" },
-        { icon: MapPin, label: "Addresses", href: "/profile/address" },
+        { icon: MapPin, label: "Addresses", href: "/addresses" },
         { icon: CreditCard, label: "Payment Methods", href: "/payments" },
         { icon: Bell, label: "Notifications", href: "/notifications" },
         { icon: Lock, label: "Security", href: "/security" },
