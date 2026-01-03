@@ -1,407 +1,355 @@
 import React, { useState } from 'react';
-import { User, Camera, X, Mail, Phone, Plus, Check } from 'lucide-react';
+import { User, Camera, Mail, Phone, Plus, Check, MapPin, ChevronRight, Shield, Package, Settings, LogOut, CreditCard, Bell, Lock, Home, ShoppingBag, PackageSearch, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Button } from './button';
+import { NavBar } from './tubelight-navbar';
+import { Component as Footer } from "../footer-taped-design";
+
+const navItems = [
+    { name: "Home", url: "/", icon: Home },
+    { name: "Shop", url: "#shop", icon: ShoppingBag },
+    { name: "Categories", url: "#categories", icon: PackageSearch },
+    { name: "About", url: "/about", icon: Info },
+];
 
 export default function EditProfilePage() {
-    const [profileData, setProfileData] = useState<{
-        name: string;
-        email: string;
-        phone: string;
-        profileImage: string | null;
-    }>({
+    const [profileData, setProfileData] = useState({
         name: "Sarah Johnson",
-        email: "Sarah@gmail.com",
+        email: "sarah.johnson@gmail.com",
         phone: "+62 812-3456-7890",
         profileImage: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&auto=format&fit=crop",
+        memberSince: "December 2025",
+        isVerified: true,
     });
 
-    const [addresses, setAddresses] = useState([
+    const [addresses] = useState([
         {
-        id: 1,
-        label: "Home",
-        name: "Sarah Johnson",
-        phone: "+62 812-3456-7890",
-        fullAddress: "Jl. Merdeka No. 123, Kec. Gubeng, Surabaya, Jawa Timur 60281",
-        isPrimary: true
+            id: 1,
+            label: "Home",
+            name: "Sarah Johnson",
+            phone: "+62 812-3456-7890",
+            fullAddress: "Jl. Merdeka No. 123, Kec. Gubeng, Surabaya, Jawa Timur 60281",
+            isPrimary: true
         },
         {
-        id: 2,
-        label: "Office",
-        name: "Sarah Johnson",
-        phone: "+62 812-3456-7890",
-        fullAddress: "Jl. Pemuda No. 45, Kec. Tegalsari, Surabaya, Jawa Timur 60264",
-        isPrimary: false
+            id: 2,
+            label: "Office",
+            name: "Sarah Johnson",
+            phone: "+62 812-3456-7890",
+            fullAddress: "Jl. Pemuda No. 45, Kec. Tegalsari, Surabaya, Jawa Timur 60264",
+            isPrimary: false
         }
     ]);
 
-    type EditType = "email" | "phone" | null;
-    type EditStep = "confirm" | "sent" | "change";
+    const [editingField, setEditingField] = useState<string | null>(null);
+    const [tempValue, setTempValue] = useState("");
 
-    const [editType, setEditType] = useState<EditType>(null);
-    const [editStep, setEditStep] = useState<EditStep>("confirm");
-    const [newValue, setNewValue] = useState("");
-    const [showAddressModal, setShowAddressModal] = useState(false);
-
-    const handleEditClick = (type: EditType) => {
-        setEditType(type);
-        setEditStep("confirm");
+    const handleEdit = (field: string, value: string) => {
+        setEditingField(field);
+        setTempValue(value);
     };
 
-    const handleSendConfirmation = () => {
-        // simulasi API kirim email / OTP
-        setTimeout(() => {
-            setEditStep("sent");
-        }, 800);
+    const handleSave = (field: string) => {
+        setProfileData({ ...profileData, [field]: tempValue });
+        setEditingField(null);
     };
 
-    const handleUpdateContact = () => {
-        if (editType === "email") {
-            setProfileData({ ...profileData, email: newValue });
-        }
-        if (editType === "phone") {
-            setProfileData({ ...profileData, phone: newValue });
-        }
-
-        // reset
-        setEditType(null);
-        setEditStep("confirm");
-        setNewValue("");
+    const handleCancel = () => {
+        setEditingField(null);
+        setTempValue("");
     };
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setProfileData({ ...profileData, profileImage: reader.result as string });
-        };
-        reader.readAsDataURL(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProfileData({ ...profileData, profileImage: reader.result as string });
+            };
+            reader.readAsDataURL(file);
         }
     };
 
-    const handleRemoveImage = () => {
-        setProfileData({ ...profileData, profileImage: null });
-    };
-
-    const setPrimaryAddress = (id: number) => {
-        setAddresses(addresses.map(addr => ({
-        ...addr,
-        isPrimary: addr.id === id
-        })));
-    };
-
-    const handleSave = () => {
-        alert('Profile updated successfully!');
-    };
+    const menuItems = [
+        { icon: Package, label: "My Orders", href: "/orders", badge: "2" },
+        { icon: MapPin, label: "Addresses", href: "/profile/address" },
+        { icon: CreditCard, label: "Payment Methods", href: "/payments" },
+        { icon: Bell, label: "Notifications", href: "/notifications" },
+        { icon: Lock, label: "Security", href: "/security" },
+        { icon: Settings, label: "Settings", href: "/settings" },
+    ];
 
     return (
-        <div className="min-h-screen bg-background font-sans">
-        {/* Header */}
-        <header className="border-b border-border sticky top-0 z-50 backdrop-blur-md bg-background/80">
-            <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                    <Link to="/">
-                    <button 
-                    className="w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
-                    >
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                    </button>
-                    </Link>
-                <h1 className="text-xl font-bold text-foreground">Edit Profile</h1>
-                </div>
-                <button 
-                onClick={handleSave}
-                className="px-6 py-2 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"
-                >
-                Save Changes
-                </button>
-            </div>
-            </div>
-        </header>
+        <div className="min-h-screen bg-muted/30">
+            <NavBar items={navItems} />
 
-        <div className="max-w-4xl mx-auto px-6 py-8">
-            {/* Profile Photo Section */}
-            <div className="bg-card border border-border rounded-xl shadow-sm p-8 mb-6">
-            <h2 className="text-lg font-bold text-foreground mb-6">Profile Photo</h2>
-            <div className="flex items-center space-x-6">
-                <div className="relative">
-                <div className="w-32 h-32 rounded-full bg-gray-200 overflow-hidden">
-                    {profileData.profileImage ? (
-                    <img 
-                        src={profileData.profileImage} 
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                    />
-                    ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                        <User size={48} className="text-gray-400" />
-                    </div>
-                    )}
-                </div>
-                <label className="absolute bottom-0 right-0 w-10 h-10 bg-primary rounded-full flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
-                    <Camera size={20} className="text-primary-foreground" />
-                    <input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    />
-                </label>
-                </div>
-                <div className="flex-1">
-                <p className="text-muted-foreground text-sm mb-3">Upload a new profile photo or remove the current one</p>
-                <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
-                    {profileData.profileImage && (
-                    <button 
-                        onClick={handleRemoveImage}
-                        className="px-4 py-2 bg-destructive/10 text-destructive rounded-2xl hover:bg-destructive/20 transition-colors text-sm font-medium"
-                    >
-                        Remove Photo
-                    </button>
-                    )}
-                </div>
-                </div>
-            </div>
-            </div>
+            <div className="container px-4 md:px-6 mx-auto max-w-6xl py-8">
+                {/* Breadcrumb */}
+                <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+                    <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+                    <span>/</span>
+                    <span className="text-foreground font-medium">My Account</span>
+                </nav>
 
-            {/* Personal Information */}
-            <div className="bg-card border border-border rounded-xl shadow-sm p-8 mb-6">
-            <h2 className="text-lg font-bold text-foreground mb-6">Personal Information</h2>
-            <div className="space-y-5">
-                <div>
-                <label className="block text-sm font-medium text-foreground mb-2">Full Name</label>
-                <input 
-                    type="text"
-                    value={profileData.name}
-                    onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-border rounded-xl bg-background focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
-                />
-                </div>
-            </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="bg-card border border-border rounded-xl shadow-sm p-8 mb-6">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-foreground">Contact Information</h2>
-            </div>
-            <div className="space-y-4">
-                <div className="flex items-center space-x-4 p-4 border border-border rounded-xl bg-background/50">
-                <Mail size={20} className="text-muted-foreground" />
-                <div className="flex-1">
-                    <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="font-medium text-foreground">{profileData.email}</p>
-                </div>
-                <button 
-                    onClick={() => handleEditClick("email")}
-                    className="text-sm text-primary hover:text-primary/80 font-medium">Edit</button>
-                </div>
-                <div className="flex items-center space-x-4 p-4 border border-border rounded-xl bg-background/50">
-                <Phone size={20} className="text-muted-foreground" />
-                <div className="flex-1">
-                    <p className="text-sm text-muted-foreground">Phone Number</p>
-                    <p className="font-medium text-foreground">{profileData.phone}</p>
-                </div>
-                <button 
-                    onClick={() => handleEditClick("phone")}
-                    className="text-sm text-primary hover:text-primary/80 font-medium">Edit</button>
-                </div>
-            </div>
-            </div>
-
-            {/* Address Section */}
-            <div className="bg-card border border-border rounded-xl shadow-sm p-8">
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-foreground">Addresses</h2>
-                <Link to="/profile/address">
-                <button 
-                className="text-sm text-primary hover:text-primary/80 flex items-center space-x-1 font-medium"
-                >
-                <Plus size={16} />
-                <span>Add New Address</span>
-                </button>
-                </Link>
-            </div>
-            <div className="space-y-4">
-                {addresses.map((address) => (
-                <div 
-                    key={address.id}
-                    className={`p-5 border-2 rounded-xl transition-all ${
-                    address.isPrimary 
-                        ? 'border-primary bg-primary/5' 
-                        : 'border-border hover:border-border/80'
-                    }`}
-                >
-                    <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-2">
-                        <span className="px-3 py-1 bg-secondary text-foreground text-xs font-medium rounded-full">
-                        {address.label}
-                        </span>
-                        {address.isPrimary && (
-                        <span className="px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full flex items-center space-x-1">
-                            <Check size={12} />
-                            <span>Primary</span>
-                        </span>
-                        )}
-                    </div>
-                    <Link to='/profile/address' state={{address}}>
-                    <button className="text-sm text-primary hover:text-primary/80 font-medium">Edit</button>
-                    </Link>
-                    </div>
-                    <p className="font-semibold text-foreground mb-1">{address.name}</p>
-                    <p className="text-sm text-muted-foreground mb-1">{address.phone}</p>
-                    <p className="text-sm text-muted-foreground mb-4">{address.fullAddress}</p>
-                    {!address.isPrimary && (
-                    <button 
-                        onClick={() => setPrimaryAddress(address.id)}
-                        className="text-sm text-primary hover:text-primary/80 font-medium"
-                    >
-                        Set as Primary Address
-                    </button>
-                    )}
-                </div>
-                ))}
-            </div>
-            </div>
-        </div>
-
-        {editType && (
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-card rounded-3xl max-w-md w-full p-8">
-                    
-                    {/*KONFIRMASI */}
-                    {editStep === "confirm" && (
-                        <>
-                            <button
-                                onClick={() => setEditType(null)}
-                                className="mb-4 w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors">
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                            </button>
-
-                            <div className='pl-3 pr-3'>
-                                <h2 className="text-xl font-bold mb-4">
-                                    Ubah {editType === "email" ? "Email" : "Nomor Telepon"}
-                                </h2>
-
-                                <p className="text-sm text-muted-foreground mb-6">
-                                    Mohon konfirmasi{" "}
-                                    <b>
-                                        {editType === "email"
-                                            ? profileData.email
-                                            : profileData.phone}
-                                    </b>{" "}
-                                    sebelum mengubah ke {editType} baru
-                                </p>
-
-                                <button
-                                    onClick={handleSendConfirmation}
-                                    className="w-full py-3 bg-primary text-primary-foreground rounded-2xl font-medium"
-                                >
-                                    Kirim {editType === "email" ? "Email Konfirmasi" : "Kode OTP"}
-                                </button>
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    {/* Sidebar */}
+                    <div className="lg:col-span-1">
+                        <div className="bg-card border border-border rounded-xl p-6">
+                            {/* Profile Summary */}
+                            <div className="text-center mb-6 pb-6 border-b border-border">
+                                <div className="relative w-20 h-20 mx-auto mb-3">
+                                    <img
+                                        src={profileData.profileImage || ""}
+                                        alt={profileData.name}
+                                        className="w-full h-full rounded-full object-cover border-4 border-background shadow-lg"
+                                    />
+                                    {profileData.isVerified && (
+                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center border-2 border-background">
+                                            <Check size={12} className="text-white" />
+                                        </div>
+                                    )}
+                                </div>
+                                <h3 className="font-semibold">{profileData.name}</h3>
+                                <p className="text-sm text-muted-foreground">{profileData.email}</p>
                             </div>
-                        </>
-                    )}
 
-                    {/* EMAIL TERKIRIM */}
-                    {editStep === "sent" && (
-                        <>
-                            <button
-                                onClick={() => setEditType(null)}
-                                className="mb-4 w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors">
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                            </button>
-
-                            <div className='pl-3 pr-3'>
-                                <h2 className="text-xl font-bold mb-3">
-                                    Ubah {editType === "email" ? "Email" : "Nomor Telepon"}
-                                </h2>
-
-                                <p className="text-sm text-muted-foreground mb-6">
-                                    {editType === "email"
-                                        ? "Email berhasil dikirim, silahkan cek email anda"
-                                        : "Kode verifikasi berhasil dikirim"}
-                                </p>
-
-                                <button
-                                    onClick={() => setEditStep("change")}
-                                    className="w-full py-3 bg-primary text-primary-foreground rounded-2xl font-medium"> Lanjutkan
+                            {/* Menu */}
+                            <nav className="space-y-1">
+                                {menuItems.map((item) => (
+                                    <Link
+                                        key={item.label}
+                                        to={item.href}
+                                        className="flex items-center justify-between p-3 rounded-lg hover:bg-muted transition-colors group"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <item.icon size={18} className="text-muted-foreground group-hover:text-primary transition-colors" />
+                                            <span className="text-sm font-medium">{item.label}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {item.badge && (
+                                                <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                                                    {item.badge}
+                                                </span>
+                                            )}
+                                            <ChevronRight size={16} className="text-muted-foreground" />
+                                        </div>
+                                    </Link>
+                                ))}
+                                <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 transition-colors">
+                                    <LogOut size={18} />
+                                    <span className="text-sm font-medium">Log Out</span>
                                 </button>
-                            </div>
-                        </>
-                    )}
-
-                    {/* INPUT KONTAK BARU */}
-                    {editStep === "change" && (
-                        <>
-                            <button
-                                onClick={() => setEditType(null)}
-                                className="mb-4 w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors">
-                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                    </svg>
-                            </button>
-
-                            <div className='pl-3 pr-3'>
-                                <h2 className="text-xl font-bold mb-4">
-                                    Ubah {editType === "email" ? "Email" : "Nomor Telepon"}
-                                </h2>
-
-                                <input
-                                    type={editType === "email" ? "email" : "tel"}
-                                    placeholder={
-                                        editType === "email"
-                                            ? "Masukkan email baru"
-                                            : "Masukkan nomor telepon baru"
-                                    }
-                                    value={newValue}
-                                    onChange={(e) => setNewValue(e.target.value)}
-                                    className="w-full px-4 py-3 border rounded-2xl mb-6 focus:ring-2 focus:ring-primary"
-                                />
-
-                                <button
-                                    onClick={handleUpdateContact}
-                                    className="w-full py-3 bg-primary text-primary-foreground rounded-2xl font-medium"> Simpan Perubahan
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
-        )}
-
-
-        {/* Add Address Modal (Placeholder) */}
-        {showAddressModal && (
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-card border border-border rounded-3xl max-w-2xl w-full p-8">
-                    <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-bold text-foreground">Add New Address</h2>
-                    <button 
-                        onClick={() => setShowAddressModal(false)}
-                        className="text-muted-foreground hover:text-foreground"
-                    >
-                        <X size={24} />
-                    </button>
+                            </nav>
+                        </div>
                     </div>
-                    <p className="text-muted-foreground mb-6">This will redirect to the Add Address page</p>
-                    <Link to="/profile/address">
-                    <button 
-                    className="w-full px-6 py-3 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"
-                    >
-                    Go to Add Address
-                    </button>
-                    </Link>
+
+                    {/* Main Content */}
+                    <div className="lg:col-span-3 space-y-6">
+                        {/* Profile Card */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-card border border-border rounded-xl overflow-hidden"
+                        >
+                            <div className="p-6 border-b border-border">
+                                <h2 className="text-lg font-semibold">Profile Information</h2>
+                                <p className="text-sm text-muted-foreground">Manage your personal information</p>
+                            </div>
+                            <div className="p-6">
+                                {/* Profile Photo */}
+                                <div className="flex items-center gap-6 mb-8 pb-8 border-b border-border">
+                                    <div className="relative">
+                                        <div className="w-24 h-24 rounded-xl overflow-hidden bg-muted">
+                                            {profileData.profileImage ? (
+                                                <img
+                                                    src={profileData.profileImage}
+                                                    alt="Profile"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center">
+                                                    <User size={32} className="text-muted-foreground" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <label className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-lg flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors shadow-lg">
+                                            <Camera size={14} className="text-primary-foreground" />
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                className="hidden"
+                                            />
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <p className="font-medium mb-1">Profile Photo</p>
+                                        <p className="text-sm text-muted-foreground mb-3">JPG, PNG or GIF. Max 2MB</p>
+                                        <div className="flex gap-2">
+                                            <label className="cursor-pointer">
+                                                <Button variant="outline" size="sm" className="rounded-lg" asChild>
+                                                    <span>Change Photo</span>
+                                                </Button>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleImageUpload}
+                                                    className="hidden"
+                                                />
+                                            </label>
+                                            {profileData.profileImage && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                                    onClick={() => setProfileData({ ...profileData, profileImage: "" })}
+                                                >
+                                                    Remove
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Form Fields */}
+                                <div className="space-y-6">
+                                    {/* Name */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                        <label className="text-sm font-medium text-muted-foreground pt-2">Full Name</label>
+                                        <div className="md:col-span-2">
+                                            {editingField === 'name' ? (
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        type="text"
+                                                        value={tempValue}
+                                                        onChange={(e) => setTempValue(e.target.value)}
+                                                        className="flex-1 px-4 py-2 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                                        autoFocus
+                                                    />
+                                                    <Button size="sm" onClick={() => handleSave('name')} className="rounded-lg">Save</Button>
+                                                    <Button size="sm" variant="ghost" onClick={handleCancel} className="rounded-lg">Cancel</Button>
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-between">
+                                                    <span className="font-medium">{profileData.name}</span>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleEdit('name', profileData.name)}
+                                                        className="text-primary rounded-lg"
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Email */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                        <label className="text-sm font-medium text-muted-foreground pt-2">Email</label>
+                                        <div className="md:col-span-2">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Mail size={16} className="text-muted-foreground" />
+                                                    <span className="font-medium">{profileData.email}</span>
+                                                    {profileData.isVerified && (
+                                                        <span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                                                            <Shield size={10} />
+                                                            Verified
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <Button variant="ghost" size="sm" className="text-primary rounded-lg">
+                                                    Change
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Phone */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                        <label className="text-sm font-medium text-muted-foreground pt-2">Phone</label>
+                                        <div className="md:col-span-2">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <Phone size={16} className="text-muted-foreground" />
+                                                    <span className="font-medium">{profileData.phone}</span>
+                                                </div>
+                                                <Button variant="ghost" size="sm" className="text-primary rounded-lg">
+                                                    Change
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Member Since */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                                        <label className="text-sm font-medium text-muted-foreground pt-2">Member Since</label>
+                                        <div className="md:col-span-2">
+                                            <span className="font-medium">{profileData.memberSince}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Addresses Card */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="bg-card border border-border rounded-xl overflow-hidden"
+                        >
+                            <div className="p-6 border-b border-border flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-lg font-semibold">Saved Addresses</h2>
+                                    <p className="text-sm text-muted-foreground">Manage your delivery addresses</p>
+                                </div>
+                                <Link to="/profile/address">
+                                    <Button size="sm" className="rounded-lg">
+                                        <Plus size={16} className="mr-2" />
+                                        Add New
+                                    </Button>
+                                </Link>
+                            </div>
+                            <div className="divide-y divide-border">
+                                {addresses.map((address) => (
+                                    <div key={address.id} className="p-6 hover:bg-muted/50 transition-colors">
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div className="flex gap-4">
+                                                <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <MapPin size={18} className="text-muted-foreground" />
+                                                </div>
+                                                <div>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="font-medium">{address.label}</span>
+                                                        {address.isPrimary && (
+                                                            <span className="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded-full">
+                                                                Primary
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-sm text-muted-foreground mb-1">{address.name} • {address.phone}</p>
+                                                    <p className="text-sm text-muted-foreground">{address.fullAddress}</p>
+                                                </div>
+                                            </div>
+                                            <Link to="/profile/address" state={{ address }}>
+                                                <Button variant="ghost" size="sm" className="text-primary rounded-lg">
+                                                    Edit
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </div>
                 </div>
             </div>
-        )}
+
+            <Footer />
         </div>
     );
 }

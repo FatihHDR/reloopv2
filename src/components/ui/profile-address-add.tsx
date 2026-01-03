@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
-import { MapPin, Navigation, Search } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Navigation, Home, Building, Building2, ChevronLeft, Check, ShoppingBag, PackageSearch, Info } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Button } from './button';
 import MapPicker from './MapPicker';
+import { NavBar } from './tubelight-navbar';
+import { Component as Footer } from "../footer-taped-design";
+
+const navItems = [
+    { name: "Home", url: "/", icon: Home },
+    { name: "Shop", url: "#shop", icon: ShoppingBag },
+    { name: "Categories", url: "#categories", icon: PackageSearch },
+    { name: "About", url: "/about", icon: Info },
+];
 
 export default function AddAddressPage() {
     const location = useLocation();
+    const navigate = useNavigate();
     const editAddress = location.state?.address || null;
     const isEditMode = !!editAddress;
 
     const [formData, setFormData] = useState({
-        label: editAddress?.label || "",
+        label: editAddress?.label || "Home",
         recipientName: editAddress?.name || "",
         phoneNumber: editAddress?.phone || "",
         province: "",
@@ -24,19 +34,22 @@ export default function AddAddressPage() {
         isPrimary: editAddress?.isPrimary || false
     });
 
-    const [mapLocation, setMapLocation] = useState({
+    const [, setMapLocation] = useState({
         lat: -7.2575,
         lng: 112.7521,
         address: "Surabaya, Jawa Timur"
     });
 
-    const [showMap, setShowMap] = useState(false);
-    const navigate = useNavigate();
-
     const provinces = ["Jawa Timur", "Jawa Barat", "Jawa Tengah", "DKI Jakarta", "Bali"];
     const cities = ["Surabaya", "Sidoarjo", "Gresik", "Malang", "Mojokerto"];
     const districts = ["Gubeng", "Tegalsari", "Genteng", "Wonokromo", "Rungkut"];
     const subDistricts = ["Airlangga", "Gubeng", "Kertajaya", "Pucang Sewu", "Mojo"];
+
+    const labelOptions = [
+        { value: 'Home', icon: Home },
+        { value: 'Office', icon: Building },
+        { value: 'Apartment', icon: Building2 },
+    ];
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -44,283 +57,362 @@ export default function AddAddressPage() {
     };
 
     const handleSave = () => {
-        // Validasi
         if (!formData.recipientName || !formData.phoneNumber || !formData.fullAddress) {
             alert('Please fill in all required fields');
             return;
         }
-        
+
         if (isEditMode) {
-            console.log("UPDATE ADDRESS:", formData);
             alert("Address updated successfully!");
         } else {
-            console.log("ADD ADDRESS:", formData);
             alert("Address saved successfully!");
         }
 
-        console.log('Map Location:', mapLocation);
         navigate("/profile");
     };
 
     const handleUseCurrentLocation = () => {
         if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-            setMapLocation({
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-                address: "Current Location"
-            });
-            alert('Current location set!');
-            },
-            (error) => {
-            alert('Unable to get location: ' + error.message);
-            }
-        );
-        } else {
-        alert('Geolocation is not supported by your browser');
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setMapLocation({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                        address: "Current Location"
+                    });
+                },
+                (error) => {
+                    alert('Unable to get location: ' + error.message);
+                }
+            );
         }
     };
 
     return (
-        <div className="min-h-screen bg-background font-sans">
-        {/* Header */}
-        <header className="border-b border-border sticky top-0 z-50 backdrop-blur-md bg-background/80">
-            <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                <Link to="/profile">
-                <button 
-                    className="w-10 h-10 rounded-full bg-secondary hover:bg-secondary/80 flex items-center justify-center transition-colors"
-                >
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                </button>
-                </Link>
-                <h1 className="text-xl font-bold text-foreground">
-                    {isEditMode ? "Edit Address" : "Add New Address"}
-                </h1>
+        <div className="min-h-screen bg-muted/30">
+            <NavBar items={navItems} />
+
+            <div className="container px-4 md:px-6 mx-auto max-w-4xl py-8">
+                {/* Breadcrumb */}
+                <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+                    <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+                    <span>/</span>
+                    <Link to="/profile" className="hover:text-primary transition-colors">My Account</Link>
+                    <span>/</span>
+                    <span className="text-foreground font-medium">{isEditMode ? "Edit Address" : "Add Address"}</span>
+                </nav>
+
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="w-10 h-10 rounded-lg border border-border bg-card flex items-center justify-center hover:bg-muted transition-colors"
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
+                        <div>
+                            <h1 className="text-2xl font-bold">{isEditMode ? "Edit Address" : "Add New Address"}</h1>
+                            <p className="text-sm text-muted-foreground">Fill in the details below</p>
+                        </div>
+                    </div>
+                    <Button onClick={handleSave} className="rounded-lg hidden md:flex">
+                        <Check size={16} className="mr-2" />
+                        {isEditMode ? "Update" : "Save"} Address
+                    </Button>
                 </div>
-                <button 
-                onClick={handleSave}
-                className="px-6 py-2 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"> 
-                {isEditMode ? "Update Address" : "Save"}
-                </button>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Form */}
+                    <div className="lg:col-span-2 space-y-6">
+                        {/* Label Selection */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-card border border-border rounded-xl p-6"
+                        >
+                            <h3 className="font-semibold mb-4">Address Label</h3>
+                            <div className="flex flex-wrap gap-3">
+                                {labelOptions.map((option) => {
+                                    const Icon = option.icon;
+                                    const isSelected = formData.label === option.value;
+                                    return (
+                                        <button
+                                            key={option.value}
+                                            onClick={() => setFormData({ ...formData, label: option.value })}
+                                            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border transition-all ${isSelected
+                                                ? 'border-primary bg-primary/5 text-primary'
+                                                : 'border-border bg-background hover:border-primary/50'
+                                                }`}
+                                        >
+                                            <Icon size={18} />
+                                            <span className="font-medium">{option.value}</span>
+                                            {isSelected && <Check size={16} />}
+                                        </button>
+                                    );
+                                })}
+                                <input
+                                    type="text"
+                                    placeholder="Other"
+                                    value={!['Home', 'Office', 'Apartment'].includes(formData.label) ? formData.label : ''}
+                                    onChange={(e) => setFormData({ ...formData, label: e.target.value })}
+                                    className="px-4 py-2.5 border border-border rounded-lg bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 w-32"
+                                />
+                            </div>
+                        </motion.div>
+
+                        {/* Contact Info */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="bg-card border border-border rounded-xl p-6"
+                        >
+                            <h3 className="font-semibold mb-4">Contact Information</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">
+                                        Recipient Name <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="recipientName"
+                                        value={formData.recipientName}
+                                        onChange={handleInputChange}
+                                        placeholder="Enter full name"
+                                        className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">
+                                        Phone Number <span className="text-red-500">*</span>
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        name="phoneNumber"
+                                        value={formData.phoneNumber}
+                                        onChange={handleInputChange}
+                                        placeholder="+62"
+                                        className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                    />
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Address Details */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="bg-card border border-border rounded-xl p-6"
+                        >
+                            <h3 className="font-semibold mb-4">Address Details</h3>
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Province</label>
+                                        <select
+                                            name="province"
+                                            value={formData.province}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                        >
+                                            <option value="">Select province</option>
+                                            {provinces.map(prov => (
+                                                <option key={prov} value={prov}>{prov}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">City</label>
+                                        <select
+                                            name="city"
+                                            value={formData.city}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                        >
+                                            <option value="">Select city</option>
+                                            {cities.map(city => (
+                                                <option key={city} value={city}>{city}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">District</label>
+                                        <select
+                                            name="district"
+                                            value={formData.district}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                        >
+                                            <option value="">Select</option>
+                                            {districts.map(dist => (
+                                                <option key={dist} value={dist}>{dist}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Sub-district</label>
+                                        <select
+                                            name="subDistrict"
+                                            value={formData.subDistrict}
+                                            onChange={handleInputChange}
+                                            className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                        >
+                                            <option value="">Select</option>
+                                            {subDistricts.map(sub => (
+                                                <option key={sub} value={sub}>{sub}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">Postal Code</label>
+                                        <input
+                                            type="text"
+                                            name="postalCode"
+                                            value={formData.postalCode}
+                                            onChange={handleInputChange}
+                                            placeholder="e.g. 60281"
+                                            className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">
+                                        Full Address <span className="text-red-500">*</span>
+                                    </label>
+                                    <textarea
+                                        name="fullAddress"
+                                        value={formData.fullAddress}
+                                        onChange={handleInputChange}
+                                        placeholder="Street name, building number, floor, unit, etc."
+                                        rows={3}
+                                        className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">
+                                        Address Note <span className="text-muted-foreground font-normal">(Optional)</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="addressNote"
+                                        value={formData.addressNote}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. Near the mall, next to gas station"
+                                        className="w-full px-4 py-2.5 border border-border rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-primary/30"
+                                    />
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Primary Toggle - Mobile */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="bg-card border border-border rounded-xl p-6 lg:hidden"
+                        >
+                            <label className="flex items-center justify-between cursor-pointer">
+                                <div>
+                                    <p className="font-medium">Set as primary address</p>
+                                    <p className="text-sm text-muted-foreground">Use as default shipping address</p>
+                                </div>
+                                <div className="relative">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.isPrimary}
+                                        onChange={(e) => setFormData({ ...formData, isPrimary: e.target.checked })}
+                                        className="sr-only peer"
+                                    />
+                                    <div className="w-11 h-6 bg-muted rounded-full peer peer-checked:bg-primary transition-colors" />
+                                    <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform" />
+                                </div>
+                            </label>
+                        </motion.div>
+
+                        {/* Save Button - Mobile */}
+                        <Button onClick={handleSave} className="w-full rounded-lg py-6 md:hidden text-base font-semibold">
+                            {isEditMode ? "Update" : "Save"} Address
+                        </Button>
+                    </div>
+
+                    {/* Sidebar */}
+                    <div className="lg:col-span-1 space-y-6">
+                        {/* Map */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="bg-card border border-border rounded-xl overflow-hidden sticky top-24"
+                        >
+                            <div className="p-4 border-b border-border">
+                                <h3 className="font-semibold mb-1">Pin Location</h3>
+                                <p className="text-sm text-muted-foreground">Mark your exact location on map</p>
+                            </div>
+                            <div className="h-64">
+                                <MapPicker
+                                    onSelectLocation={(data) => {
+                                        setMapLocation({
+                                            lat: data.lat,
+                                            lng: data.lng,
+                                            address: data.address,
+                                        });
+                                        setFormData(prev => ({
+                                            ...prev,
+                                            fullAddress: data.address,
+                                        }));
+                                    }}
+                                />
+                            </div>
+                            <div className="p-4 border-t border-border">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleUseCurrentLocation}
+                                    className="w-full rounded-lg"
+                                >
+                                    <Navigation size={14} className="mr-2" />
+                                    Use Current Location
+                                </Button>
+                            </div>
+                        </motion.div>
+
+                        {/* Set Primary - Desktop */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="bg-card border border-border rounded-xl p-4 hidden lg:block"
+                        >
+                            <label className="flex items-start gap-3 cursor-pointer">
+                                <div className="relative mt-0.5">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.isPrimary}
+                                        onChange={(e) => setFormData({ ...formData, isPrimary: e.target.checked })}
+                                        className="sr-only peer"
+                                    />
+                                    <div className="w-5 h-5 border-2 border-border rounded peer-checked:border-primary peer-checked:bg-primary transition-colors flex items-center justify-center">
+                                        {formData.isPrimary && <Check size={12} className="text-white" />}
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-sm">Set as primary address</p>
+                                    <p className="text-xs text-muted-foreground">This will be your default shipping address</p>
+                                </div>
+                            </label>
+                        </motion.div>
+                    </div>
+                </div>
             </div>
-            </div>
-        </header>
 
-        <div className="max-w-4xl mx-auto px-6 py-8">
-            {/* Address Label */}
-            <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="text-lg font-bold text-foreground mb-4">Address Label</h2>
-            <div className="flex flex-wrap gap-3">
-                {['Home', 'Office', 'Apartment'].map((label) => (
-                <button
-                    key={label}
-                    onClick={() => setFormData({ ...formData, label })}
-                    className={`px-6 py-2 rounded-2xl text-sm font-medium transition-colors ${
-                    formData.label === label
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-secondary text-foreground hover:bg-secondary/80'
-                    }`}
-                >
-                    {label}
-                </button>
-                ))}
-                <input
-                type="text"
-                name="label"
-                value={formData.label && !['Home', 'Office', 'Apartment'].includes(formData.label) ? formData.label : ''}
-                onChange={handleInputChange}
-                placeholder="Other (type here)"
-                className="px-4 py-2 border border-border bg-background rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
-                />
-            </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="text-lg font-bold text-foreground mb-4">Contact Information</h2>
-            <div className="space-y-4">
-                <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                    Recipient Name <span className="text-destructive">*</span>
-                </label>
-                <input
-                    type="text"
-                    name="recipientName"
-                    value={formData.recipientName}
-                    onChange={handleInputChange}
-                    placeholder="Enter recipient name"
-                    className="w-full px-4 py-3 border border-border bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
-                />
-                </div>
-                <div>
-                <label className="block text-sm font-medium text-foreground mb-2">
-                    Phone Number <span className="text-destructive">*</span>
-                </label>
-                <input
-                    type="tel"
-                    name="phoneNumber"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    placeholder="Enter phone number"
-                    className="w-full px-4 py-3 border border-border bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground"
-                />
-                </div>
-            </div>
-            </div>
-
-            {/* Address Details */}
-            <div className="bg-card border border-border rounded-xl shadow-sm p-6 mb-6">
-            <h2 className="text-lg font-bold text-foreground mb-4">Address Details</h2>
-            <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Province</label>
-                    <select
-                    name="province"
-                    value={formData.province}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
-                    >
-                    <option value="">Select Province</option>
-                    {provinces.map(prov => (
-                        <option key={prov} value={prov}>{prov}</option>
-                    ))}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">City/Regency</label>
-                    <select
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
-                    >
-                    <option value="">Select City</option>
-                    {cities.map(city => (
-                        <option key={city} value={city}>{city}</option>
-                    ))}
-                    </select>
-                </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">District</label>
-                    <select
-                    name="district"
-                    value={formData.district}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
-                    >
-                    <option value="">Select District</option>
-                    {districts.map(dist => (
-                        <option key={dist} value={dist}>{dist}</option>
-                    ))}
-                    </select>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Sub-district</label>
-                    <select
-                    name="subDistrict"
-                    value={formData.subDistrict}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
-                    >
-                    <option value="">Select Sub-district</option>
-                    {subDistricts.map(sub => (
-                        <option key={sub} value={sub}>{sub}</option>
-                    ))}
-                    </select>
-                </div>
-                </div>
-
-                <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Postal Code</label>
-                <input
-                    type="text"
-                    name="postalCode"
-                    value={formData.postalCode}
-                    onChange={handleInputChange}
-                    placeholder="Enter postal code"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
-                />
-                </div>
-
-                <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Address <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                    name="fullAddress"
-                    value={formData.fullAddress}
-                    onChange={handleInputChange}
-                    placeholder="Street name, building number, floor, etc."
-                    rows={3}
-                    className="w-full px-4 py-3 border border-border bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-foreground resize-none"
-                />
-                </div>
-
-                <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Address Note (Optional)
-                </label>
-                <input
-                    type="text"
-                    name="addressNote"
-                    value={formData.addressNote}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Near the mall, beside the park"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-black"
-                />
-                </div>
-            </div>
-            </div>
-
-            {/* Map Container */}
-            <MapPicker
-                onSelectLocation={(data) => {
-                    setMapLocation({
-                    lat: data.lat,
-                    lng: data.lng,
-                    address: data.address,
-                    });
-
-                    setFormData((prev) => ({
-                    ...prev,
-                    fullAddress: data.address,
-                    }));
-                }}
-                />
-
-            {/* Set as Primary */}
-            <div className="bg-card mt-6 border border-border rounded-xl shadow-sm p-6 mb-6">
-            <label className="flex items-center justify-between cursor-pointer">
-                <div>
-                <p className="font-semibold text-foreground">Set as primary address</p>
-                <p className="text-sm text-muted-foreground mt-1">This address will be used as your default shipping address</p>
-                </div>
-                <input
-                type="checkbox"
-                checked={formData.isPrimary}
-                onChange={(e) => setFormData({ ...formData, isPrimary: e.target.checked })}
-                className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
-                />
-            </label>
-            </div>
-
-            {/* Save Button (Mobile) */}
-            <button 
-            onClick={handleSave}
-            className="w-full md:hidden px-6 py-3 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors font-medium"
-            >
-            {isEditMode ? "Update Address" : "Save Address"}
-            </button>
-        </div>
+            <Footer />
         </div>
     );
 }
