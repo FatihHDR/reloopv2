@@ -216,3 +216,19 @@ export interface SendMessageRequest {
   product_id?: number;
   message_text: string;
 }
+
+// Transaction
+export interface Transaction {
+  id: number;
+  product_id: number;
+  buyer_id: number;
+  seller_id: number;
+  deal_price: number;
+  status: 'pending' | 'confirmed' | 'shipped' | 'completed' | 'cancelled';
+  created_at: string;
+  updated_at: string;
+  product?: Product;
+  buyer?: User;
+  seller?: User;
+}
+
