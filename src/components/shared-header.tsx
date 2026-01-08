@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { ArrowUpRight, ShoppingCart, Package } from "lucide-react";
+import { ArrowUpRight, ShoppingCart, Package, Grid3x3 } from "lucide-react";
 
 export function SharedHeader() {
   return (
@@ -11,6 +11,16 @@ export function SharedHeader() {
             ReLoop_
           </Link>
           <div className="flex items-center gap-3">
+            <Link to="/kategori">
+              <Button
+                variant="outline"
+                size="sm"
+                className="cursor-pointer rounded-full hover:bg-accent transition-all duration-300 group"
+              >
+                <Grid3x3 className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                <span className="hidden sm:inline">Categories</span>
+              </Button>
+            </Link>
             <Link to="/cart">
               <Button
                 variant="outline"

@@ -14,6 +14,7 @@ import { PageNotFoundDemo } from "./components/ui/404-page-demo";
 import ShopPage from "./components/ui/shop";
 import ProductDetail from "./components/ui/product-detail";
 import PartnerDetail from "./components/ui/partner-detail";
+import Kategori from "./components/ui/kategori";
 
 // Lazy load pages for faster initial load
 const AboutPageDemo = lazy(() => import("./components/ui/about-page-demo"));
@@ -56,6 +57,7 @@ function App() {
         <Route path="my-orders" element={<TransactionHistoryPage />} />
         <Route path="write-review" element={<ProductReviewPage />} />
         <Route path="shop" element={<ShopPage />} />
+        <Route path="kategori" element={<Kategori />} />
         <Route path="product/:productId" element={<ProductDetail />} />
         <Route path="partner/:partnerId" element={<PartnerDetail />} />
       </Route>
