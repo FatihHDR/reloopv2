@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { Button } from "./button"
 import { motion, AnimatePresence } from "framer-motion"
 import { Search, Sliders, X, Star, ArrowUpRight, Sparkles, TrendingUp, Store, Loader2 } from "lucide-react"
@@ -7,6 +7,9 @@ import { productService, categoryService } from "../../services"
 import type { Product, Category } from "../../types/api"
 
 export default function ShopPage() {
+  const [searchParams] = useSearchParams()
+  const categoryFromUrl = searchParams.get("category")
+
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
@@ -30,6 +33,15 @@ export default function ShopPage() {
 
         setProducts(productsRes.data || [])
         setCategories(categoriesRes.data || [])
+
+        // Auto-select category from URL if present
+        if (categoryFromUrl) {
+          const categoryId = parseInt(categoryFromUrl)
+          const foundCategory = categoriesRes.data?.find(c => c.id === categoryId)
+          if (foundCategory) {
+            setSelectedCategory(foundCategory)
+          }
+        }
       } catch (err) {
         console.error('Error fetching data:', err)
         setError('Gagal memuat data. Silakan coba lagi.')
@@ -39,7 +51,7 @@ export default function ShopPage() {
     }
 
     fetchData()
-  }, [])
+  }, [categoryFromUrl])
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {

@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { Button } from "./button"
-import { motion } from "framer-motion"
-import { ArrowLeft, Star, Heart, Share2, ShoppingCart, ChevronLeft, ChevronRight, CheckCircle, Truck, Shield, RotateCcw, MessageCircle, Minus, Plus, Loader2 } from "lucide-react"
-import { productService, wishlistService, getToken } from "../../services"
+import { motion, AnimatePresence } from "framer-motion"
+import { ArrowLeft, Star, Heart, Share2, ShoppingCart, ChevronLeft, ChevronRight, CheckCircle, Truck, Shield, RotateCcw, MessageCircle, Minus, Plus, Loader2, Check } from "lucide-react"
+import { productService, wishlistService, getToken, cartService } from "../../services"
 import type { Product } from "../../types/api"
 
 export default function ProductDetail() {
@@ -18,6 +18,8 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
   const [wishlistLoading, setWishlistLoading] = useState(false)
+  const [showAddedToCart, setShowAddedToCart] = useState(false)
+  const [isInCart, setIsInCart] = useState(false)
 
   // Fetch product data
   useEffect(() => {
@@ -52,6 +54,13 @@ export default function ProductDetail() {
     }
 
     fetchProduct()
+  }, [id])
+
+  // Check if product is in cart on mount
+  useEffect(() => {
+    if (id) {
+      setIsInCart(cartService.isInCart(id))
+    }
   }, [id])
 
   // Get images from product
@@ -128,6 +137,38 @@ export default function ProductDetail() {
     }
   }
 
+  const handleAddToCart = () => {
+    if (!product) return
+
+    // Check if user is logged in
+    if (!getToken()) {
+      navigate('/login')
+      return
+    }
+
+    cartService.addToCart(product, quantity)
+    setIsInCart(true)
+    setShowAddedToCart(true)
+
+    // Hide notification after 3 seconds
+    setTimeout(() => {
+      setShowAddedToCart(false)
+    }, 3000)
+  }
+
+  const handleBuyNow = () => {
+    if (!product) return
+
+    // Check if user is logged in
+    if (!getToken()) {
+      navigate('/login')
+      return
+    }
+
+    cartService.addToCart(product, quantity)
+    navigate('/cart')
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -152,6 +193,21 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Success Toast */}
+      <AnimatePresence>
+        {showAddedToCart && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2"
+          >
+            <Check className="w-5 h-5" />
+            <span className="font-medium">Berhasil ditambahkan ke keranjang!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-6">
         {/* Breadcrumb */}
         <motion.div
@@ -304,11 +360,29 @@ export default function ProductDetail() {
 
             {/* Action Buttons */}
             <div className="flex gap-3">
-              <Button variant="outline" size="lg" className="flex-1 rounded-full py-6 text-base font-semibold">
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                Keranjang
+              <Button
+                variant="outline"
+                size="lg"
+                className={`flex-1 rounded-full py-6 text-base font-semibold ${isInCart ? 'border-green-500 text-green-600' : ''}`}
+                onClick={handleAddToCart}
+              >
+                {isInCart ? (
+                  <>
+                    <Check className="w-5 h-5 mr-2" />
+                    Di Keranjang
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5 mr-2" />
+                    Keranjang
+                  </>
+                )}
               </Button>
-              <Button size="lg" className="flex-1 rounded-full py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all">
+              <Button
+                size="lg"
+                className="flex-1 rounded-full py-6 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                onClick={handleBuyNow}
+              >
                 Beli Sekarang
               </Button>
             </div>

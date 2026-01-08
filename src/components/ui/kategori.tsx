@@ -1,262 +1,203 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, Heart, Loader2 } from "lucide-react";
-import { Button } from "./button";
-import { SharedHeader } from "../shared-header";
+import { Loader2, Store, Package, ArrowRight, Sparkles } from "lucide-react";
 import { categoryService } from "../../services/categoryService";
 import { productService } from "../../services/productService";
-import type { Category, Product } from "../../types/api";
+import type { Category } from "../../types/api";
+
+// Category card colors for visual variety
+const categoryColors = [
+  "from-violet-500/20 via-violet-500/10 to-purple-500/5 hover:from-violet-500/30",
+  "from-emerald-500/20 via-emerald-500/10 to-teal-500/5 hover:from-emerald-500/30",
+  "from-amber-500/20 via-amber-500/10 to-orange-500/5 hover:from-amber-500/30",
+  "from-rose-500/20 via-rose-500/10 to-pink-500/5 hover:from-rose-500/30",
+  "from-sky-500/20 via-sky-500/10 to-blue-500/5 hover:from-sky-500/30",
+  "from-lime-500/20 via-lime-500/10 to-green-500/5 hover:from-lime-500/30",
+];
+
+interface CategoryWithCount extends Category {
+  productCount?: number;
+}
 
 const Kategori = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState<CategoryWithCount[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [totalProducts, setTotalProducts] = useState(0);
 
-  // Fetch categories on mount
   useEffect(() => {
-    fetchCategories();
+    fetchData();
   }, []);
 
-  // Fetch products when category changes
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory]);
-
-  const fetchCategories = async () => {
+  const fetchData = async () => {
     try {
-      setIsLoadingCategories(true);
-      const response = await categoryService.getAll({ per_page: 50 });
-      setCategories(response.data);
+      setIsLoading(true);
+
+      // Fetch categories and products in parallel
+      const [categoriesRes, productsRes] = await Promise.all([
+        categoryService.getAll({ per_page: 50 }),
+        productService.getAll({ per_page: 1, status: "active" }) // Just to get total count
+      ]);
+
+      // Get product counts per category
+      const categoriesWithCounts = await Promise.all(
+        categoriesRes.data.map(async (cat) => {
+          try {
+            const productRes = await productService.getAll({
+              category_id: cat.id,
+              per_page: 1,
+              status: "active"
+            });
+            return {
+              ...cat,
+              productCount: productRes.meta?.total || 0
+            };
+          } catch {
+            return { ...cat, productCount: 0 };
+          }
+        })
+      );
+
+      setCategories(categoriesWithCounts);
+      setTotalProducts(productsRes.meta?.total || 0);
     } catch (error) {
-      console.error("Failed to fetch categories:", error);
+      console.error("Failed to fetch data:", error);
     } finally {
-      setIsLoadingCategories(false);
+      setIsLoading(false);
     }
-  };
-
-  const fetchProducts = async () => {
-    try {
-      setIsLoadingProducts(true);
-      const params: any = {
-        per_page: 50,
-        status: "active",
-      };
-      
-      if (selectedCategory) {
-        params.category_id = selectedCategory;
-      }
-      
-      if (searchQuery) {
-        params.search = searchQuery;
-      }
-
-      const response = await productService.getAll(params);
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Failed to fetch products:", error);
-    } finally {
-      setIsLoadingProducts(false);
-    }
-  };
-
-  const handleSearch = () => {
-    fetchProducts();
-  };
-
-  const handleCategoryClick = (categoryId: number) => {
-    setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const getConditionLabel = (condition: string) => {
-    const labels: Record<string, string> = {
-      new_with_tag: "New with Tag",
-      like_new: "Like New",
-      good: "Good",
-      fair: "Fair",
-    };
-    return labels[condition] || condition;
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <SharedHeader />
-      
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-8">
-        {/* Header */}
+        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 rounded-3xl p-8 md:p-12 mb-12 overflow-hidden"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">
-            Browse by Category
-          </h1>
-          <p className="text-muted-foreground">
-            Discover quality pre-loved items across all categories
-          </p>
-        </motion.div>
-
-        {/* Search Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-8"
-        >
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <Button
-              onClick={handleSearch}
-              className="px-6 rounded-xl"
-              disabled={isLoadingProducts}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(var(--primary),0.15),transparent_60%)]" />
+          <div className="relative z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
             >
-              {isLoadingProducts ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                "Search"
-              )}
-            </Button>
-          </div>
-        </motion.div>
-
-        {/* Categories */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8"
-        >
-          <h2 className="text-2xl font-bold mb-4">Categories</h2>
-          {isLoadingCategories ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <div className="flex flex-wrap gap-3">
-              <Button
-                variant={selectedCategory === null ? "default" : "outline"}
-                onClick={() => setSelectedCategory(null)}
-                className="rounded-full"
-              >
-                All Categories
-              </Button>
-              {categories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant={selectedCategory === category.id ? "default" : "outline"}
-                  onClick={() => handleCategoryClick(category.id)}
-                  className="rounded-full"
-                >
-                  {category.name}
-                </Button>
-              ))}
-            </div>
-          )}
-        </motion.div>
-
-        {/* Products Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">
-              {selectedCategory
-                ? categories.find((c) => c.id === selectedCategory)?.name
-                : "All Products"}
-            </h2>
-            <p className="text-muted-foreground">
-              {products.length} {products.length === 1 ? "item" : "items"}
+              <Sparkles className="w-4 h-4" />
+              <span>Browse by Category</span>
+            </motion.div>
+            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-foreground via-foreground/90 to-foreground/70 bg-clip-text">
+                Jelajahi Kategori
+              </span>
+            </h1>
+            <p className="text-muted-foreground max-w-xl text-lg">
+              Temukan produk preloved berkualitas dari berbagai kategori. Pilih kategori favoritmu dan mulai belanja!
             </p>
+
+            {/* Stats */}
+            <div className="flex flex-wrap gap-6 mt-8">
+              <div className="flex items-center gap-3 bg-background/80 backdrop-blur-sm px-5 py-3 rounded-2xl border border-border/50">
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <Store className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{categories.length}</p>
+                  <p className="text-xs text-muted-foreground">Kategori</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-background/80 backdrop-blur-sm px-5 py-3 rounded-2xl border border-border/50">
+                <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
+                  <Package className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{totalProducts}</p>
+                  <p className="text-xs text-muted-foreground">Total Produk</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Categories Grid */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Semua Kategori</h2>
+              <p className="text-sm text-muted-foreground">Klik kategori untuk melihat produk</p>
+            </div>
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
+            >
+              Lihat Semua Produk
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
-          {isLoadingProducts ? (
-            <div className="flex justify-center py-16">
-              <Loader2 className="w-12 h-12 animate-spin text-primary" />
+          {isLoading ? (
+            <div className="flex justify-center py-20">
+              <div className="flex flex-col items-center gap-4">
+                <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                <p className="text-muted-foreground">Memuat kategori...</p>
+              </div>
             </div>
-          ) : products.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground text-lg">No products found</p>
+          ) : categories.length === 0 ? (
+            <div className="text-center py-20 bg-muted/20 rounded-3xl border border-border/50">
+              <Store className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-xl font-semibold mb-2">Belum ada kategori</h3>
+              <p className="text-muted-foreground">Kategori akan ditambahkan segera</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categories.map((category, index) => (
                 <Link
-                  key={product.id}
-                  to={`/product/${product.id}`}
-                  className="group"
+                  key={category.id}
+                  to={`/shop?category=${category.id}`}
                 >
                   <motion.div
-                    whileHover={{ y: -8 }}
-                    className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 * index }}
+                    whileHover={{ scale: 1.02, y: -4 }}
+                    className={`relative bg-gradient-to-br ${categoryColors[index % categoryColors.length]} backdrop-blur-sm rounded-2xl p-6 border border-border/50 transition-all duration-300 cursor-pointer group overflow-hidden h-full`}
                   >
-                    {/* Product Image */}
-                    <div className="relative aspect-square overflow-hidden bg-accent/20">
-                      <img
-                        src={
-                          product.primary_image?.image_url ||
-                          product.images?.[0]?.image_url ||
-                          "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop"
-                        }
-                        alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      {/* Condition Badge */}
-                      <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium">
-                        {getConditionLabel(product.condition_status)}
-                      </div>
-                      {/* Wishlist Button */}
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          // TODO: Add to wishlist
-                        }}
-                        className="absolute top-3 right-3 w-9 h-9 bg-background/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-                      >
-                        <Heart className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2 opacity-50 group-hover:opacity-100 transition-opacity" />
 
-                    {/* Product Info */}
-                    <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-1 line-clamp-2 group-hover:text-primary transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground mb-2 line-clamp-1">
-                        {product.location}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <p className="text-xl font-bold text-primary">
-                          {formatPrice(product.price)}
-                        </p>
-                        {product.seller && (
-                          <p className="text-xs text-muted-foreground">
-                            by {product.seller.username}
-                          </p>
+                    <div className="relative z-10">
+                      {/* Category Icon */}
+                      <div className="w-16 h-16 bg-background/80 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 shadow-sm group-hover:shadow-md transition-shadow">
+                        {category.icon_url ? (
+                          <img
+                            src={category.icon_url}
+                            alt={category.name}
+                            className="w-10 h-10 object-contain"
+                          />
+                        ) : (
+                          <Store className="w-8 h-8 text-primary" />
                         )}
+                      </div>
+
+                      {/* Category Info */}
+                      <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                        {category.name}
+                      </h3>
+
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                        Temukan produk berkualitas di kategori ini
+                      </p>
+
+                      {/* Product Count & CTA */}
+                      <div className="flex items-center justify-between">
+                        <span className="bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm font-medium">
+                          {category.productCount || 0} produk
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-primary font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                          Jelajahi
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
                       </div>
                     </div>
                   </motion.div>
@@ -264,7 +205,7 @@ const Kategori = () => {
               ))}
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

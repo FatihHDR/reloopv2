@@ -8,3 +8,4 @@ export { wishlistService } from './wishlistService';
 export { transactionService } from './transactionService';
 export { reviewService } from './reviewService';
 export { messageService } from './messageService';
+export { cartService } from './cartService';

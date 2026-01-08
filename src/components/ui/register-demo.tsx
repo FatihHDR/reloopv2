@@ -40,7 +40,7 @@ const RegisterPageDemo = () => {
       email: formData.get('email') as string,
       password: formData.get('password') as string,
       password_confirmation: formData.get('confirmPassword') as string,
-      full_name: formData.get('fullName') as string || formData.get('username') as string,
+      full_name: formData.get('name') as string,
       phone_number: formData.get('phone') as string || '08000000000',
     };
 
