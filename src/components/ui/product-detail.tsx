@@ -1,198 +1,153 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { Button } from "./button"
 import { motion } from "framer-motion"
-import { ArrowLeft, Star, Heart, Share2, ShoppingCart, ChevronLeft, ChevronRight, CheckCircle, Truck, Shield, RotateCcw, MessageCircle, Minus, Plus } from "lucide-react"
-
-type ProductDetailProps = {
-  id: number
-  title: string
-  price: number
-  priceText: string
-  originalPrice?: string
-  discount?: number
-  image: string
-  images?: string[]
-  condition?: string
-  popularity?: number
-  description?: string
-  seller: {
-    id: number
-    name: string
-    logo?: string
-    rating?: number
-    reviews?: number
-    verified?: boolean
-    responseTime?: string
-    followers?: number
-  }
-  specs?: { label: string; value: string }[]
-  category?: string
-}
-
-const productDetailsData: { [key: number]: ProductDetailProps } = {
-  11: {
-    id: 11,
-    title: "Wooden Chair",
-    price: 120000,
-    priceText: "Rp 120.000",
-    originalPrice: "Rp 350.000",
-    discount: 66,
-    image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1549187774-b4e9b0445b40?w=800&auto=format&fit=crop",
-    ],
-    condition: "Good",
-    popularity: 45,
-    category: "Furniture",
-    description: "Kursi kayu vintage dengan desain klasik. Masih dalam kondisi baik, hanya ada sedikit goresan di sudut. Cocok untuk ruang tamu atau kamar tidur. Beli sekarang dan dapatkan potongan harga!\n\nKursi ini terbuat dari kayu jati berkualitas tinggi yang tahan lama. Desainnya yang timeless membuatnya cocok untuk berbagai gaya interior, mulai dari modern minimalis hingga skandinavian.",
-    seller: {
-      id: 1,
-      name: "KosKita Thrift",
-      logo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
-      rating: 4.8,
-      reviews: 156,
-      verified: true,
-      responseTime: "< 1 jam",
-      followers: 2340,
-    },
-    specs: [
-      { label: "Kategori", value: "Furniture > Kursi" },
-      { label: "Material", value: "Kayu Jati" },
-      { label: "Dimensi", value: "45 x 50 x 80 cm" },
-      { label: "Kondisi", value: "Good - Bekas Pakai" },
-      { label: "Berat", value: "5 kg" },
-      { label: "Asal", value: "Jakarta" },
-    ],
-  },
-  12: {
-    id: 12,
-    title: "Bedside Lamp",
-    price: 80000,
-    priceText: "Rp 80.000",
-    originalPrice: "Rp 200.000",
-    discount: 60,
-    image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&auto=format&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&auto=format&fit=crop",
-    ],
-    condition: "Like New",
-    popularity: 32,
-    category: "Electronics",
-    description: "Lampu tidur modern dengan desain minimalis. Kondisi seperti baru, hanya digunakan beberapa kali. Hemat energi dengan teknologi LED.",
-    seller: {
-      id: 1,
-      name: "KosKita Thrift",
-      logo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
-      rating: 4.8,
-      reviews: 156,
-      verified: true,
-      responseTime: "< 1 jam",
-      followers: 2340,
-    },
-    specs: [
-      { label: "Kategori", value: "Elektronik > Lampu" },
-      { label: "Jenis", value: "LED Bedside Lamp" },
-      { label: "Warna", value: "Putih" },
-      { label: "Kondisi", value: "Like New" },
-    ],
-  },
-  21: {
-    id: 21,
-    title: "Denim Jacket",
-    price: 150000,
-    priceText: "Rp 150.000",
-    originalPrice: "Rp 450.000",
-    discount: 67,
-    image: "https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=800&auto=format&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=800&auto=format&fit=crop",
-    ],
-    condition: "Good",
-    popularity: 72,
-    category: "Fashion",
-    description: "Jaket denim klasik dengan desain oversized. Berwarna biru tua gelap, cocok dipadukan dengan berbagai outfit. Cocok untuk pria dan wanita.\n\nMaterial 100% cotton denim yang nyaman dipakai. Tidak ada noda atau kerusakan berarti. Ukuran L, cocok untuk badan M-L.",
-    seller: {
-      id: 2,
-      name: "ThriftThreads",
-      logo: "https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=200&h=200&fit=crop",
-      rating: 4.9,
-      reviews: 324,
-      verified: true,
-      responseTime: "< 30 menit",
-      followers: 5120,
-    },
-    specs: [
-      { label: "Kategori", value: "Fashion > Jaket" },
-      { label: "Ukuran", value: "L" },
-      { label: "Warna", value: "Biru Tua" },
-      { label: "Material", value: "100% Denim Cotton" },
-      { label: "Kondisi", value: "Good - Bekas Pakai" },
-    ],
-  },
-  31: {
-    id: 31,
-    title: "Portable Speaker",
-    price: 200000,
-    priceText: "Rp 200.000",
-    originalPrice: "Rp 500.000",
-    discount: 60,
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop",
-    ],
-    condition: "Good",
-    popularity: 88,
-    category: "Audio",
-    description: "Speaker portable Bluetooth dengan kualitas suara jernih. Baterai tahan lama hingga 10 jam. Sudah ditest dan berfungsi dengan baik.",
-    seller: {
-      id: 3,
-      name: "ElectroSwap",
-      logo: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=200&h=200&fit=crop",
-      rating: 4.7,
-      reviews: 89,
-      verified: true,
-      responseTime: "< 2 jam",
-      followers: 1560,
-    },
-    specs: [
-      { label: "Kategori", value: "Elektronik > Audio" },
-      { label: "Merek", value: "Generik" },
-      { label: "Koneksi", value: "Bluetooth 5.0" },
-      { label: "Baterai", value: "10 jam" },
-      { label: "Kondisi", value: "Good - Teruji" },
-    ],
-  },
-}
+import { ArrowLeft, Star, Heart, Share2, ShoppingCart, ChevronLeft, ChevronRight, CheckCircle, Truck, Shield, RotateCcw, MessageCircle, Minus, Plus, Loader2 } from "lucide-react"
+import { productService, wishlistService, getToken } from "../../services"
+import type { Product } from "../../types/api"
 
 export default function ProductDetail() {
   const { productId } = useParams<{ productId: string }>()
   const navigate = useNavigate()
-  const id = productId ? parseInt(productId, 10) : 11
-  const product = productDetailsData[id] || productDetailsData[11]
+  const id = productId ? parseInt(productId, 10) : 0
 
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [isFavorite, setIsFavorite] = useState(false)
+  const [wishlistLoading, setWishlistLoading] = useState(false)
 
-  const images = product.images || [product.image]
+  // Fetch product data
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (!id) {
+        setError("Product ID tidak valid")
+        setLoading(false)
+        return
+      }
+
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await productService.getById(id)
+        setProduct(response.data)
+
+        // Check if product is in wishlist
+        if (getToken()) {
+          try {
+            const wishlistCheck = await wishlistService.check(id)
+            setIsFavorite(wishlistCheck.data?.in_wishlist || false)
+          } catch {
+            // Ignore wishlist check errors
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching product:", err)
+        setError("Gagal memuat produk. Silakan coba lagi.")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProduct()
+  }, [id])
+
+  // Get images from product
+  const getImages = () => {
+    if (!product) return []
+    if (product.images && product.images.length > 0) {
+      return product.images.map(img => img.image_url)
+    }
+    if (product.primary_image?.image_url) {
+      return [product.primary_image.image_url]
+    }
+    return ["https://images.unsplash.com/photo-1560393464-5c69a73c5770?w=800&auto=format&fit=crop"]
+  }
+
+  const images = getImages()
   const nextImage = () => setCurrentImageIndex((i) => (i + 1) % images.length)
   const prevImage = () => setCurrentImageIndex((i) => (i - 1 + images.length) % images.length)
 
+  const toggleFavorite = async () => {
+    if (!getToken()) {
+      navigate("/login")
+      return
+    }
+
+    setWishlistLoading(true)
+    try {
+      if (isFavorite) {
+        await wishlistService.removeByProductId(id)
+        setIsFavorite(false)
+      } else {
+        await wishlistService.add(id)
+        setIsFavorite(true)
+      }
+    } catch (err) {
+      console.error("Error toggling wishlist:", err)
+    } finally {
+      setWishlistLoading(false)
+    }
+  }
+
+  // Format price to Indonesian Rupiah
+  const formatPrice = (price?: number) => {
+    if (!price) return "Rp 0"
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price)
+  }
+
   const getConditionStyle = (condition?: string) => {
     switch (condition) {
-      case "Like New":
+      case "like_new":
         return "bg-green-100 text-green-700 border-green-200"
-      case "Good":
+      case "new_with_tag":
+        return "bg-emerald-100 text-emerald-700 border-emerald-200"
+      case "good":
         return "bg-blue-100 text-blue-700 border-blue-200"
-      case "Fair":
+      case "fair":
         return "bg-yellow-100 text-yellow-700 border-yellow-200"
       default:
         return "bg-gray-100 text-gray-700 border-gray-200"
     }
+  }
+
+  const getConditionLabel = (condition?: string) => {
+    switch (condition) {
+      case "new_with_tag": return "New with Tag"
+      case "like_new": return "Like New"
+      case "good": return "Good"
+      case "fair": return "Fair"
+      default: return condition || "Unknown"
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <p className="text-muted-foreground">Memuat produk...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error || "Produk tidak ditemukan"}</p>
+          <Button onClick={() => navigate("/shop")}>Kembali ke Shop</Button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -213,7 +168,7 @@ export default function ProductDetail() {
             Shop
           </Link>
           <span className="text-muted-foreground">/</span>
-          <span className="text-foreground font-medium truncate max-w-[200px]">{product.title}</span>
+          <span className="text-foreground font-medium truncate max-w-[200px]">{product.name}</span>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -223,21 +178,14 @@ export default function ProductDetail() {
             <div className="relative aspect-square bg-muted/20 rounded-3xl overflow-hidden border border-border group">
               <img
                 src={images[currentImageIndex]}
-                alt={product.title}
+                alt={product.name}
                 className="w-full h-full object-cover"
               />
 
               {/* Condition Badge */}
-              {product.condition && (
-                <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-sm font-medium border ${getConditionStyle(product.condition)}`}>
-                  {product.condition}
-                </div>
-              )}
-
-              {/* Discount Badge */}
-              {product.discount && (
-                <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1.5 rounded-full text-sm font-bold">
-                  -{product.discount}%
+              {product.condition_status && (
+                <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-sm font-medium border ${getConditionStyle(product.condition_status)}`}>
+                  {getConditionLabel(product.condition_status)}
                 </div>
               )}
 
@@ -285,16 +233,21 @@ export default function ProductDetail() {
             <div>
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">{product.category}</p>
-                  <h1 className="text-2xl md:text-3xl font-bold">{product.title}</h1>
+                  <p className="text-sm text-muted-foreground mb-1">{product.category?.name}</p>
+                  <h1 className="text-2xl md:text-3xl font-bold">{product.name}</h1>
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setIsFavorite(!isFavorite)}
+                    onClick={toggleFavorite}
+                    disabled={wishlistLoading}
                     className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all ${isFavorite ? "bg-red-50 border-red-200 text-red-500" : "border-border hover:border-primary text-muted-foreground"
                       }`}
                   >
-                    <Heart size={20} className={isFavorite ? "fill-current" : ""} />
+                    {wishlistLoading ? (
+                      <Loader2 size={20} className="animate-spin" />
+                    ) : (
+                      <Heart size={20} className={isFavorite ? "fill-current" : ""} />
+                    )}
                   </button>
                   <button className="w-10 h-10 rounded-full border border-border hover:border-primary flex items-center justify-center text-muted-foreground transition-all">
                     <Share2 size={20} />
@@ -302,29 +255,20 @@ export default function ProductDetail() {
                 </div>
               </div>
 
-              {/* Rating */}
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1">
-                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{product.seller.rating}</span>
-                </div>
-                <span className="text-muted-foreground text-sm">• {product.popularity} orang tertarik</span>
-              </div>
+              {/* Location */}
+              {product.location && (
+                <p className="text-sm text-muted-foreground">📍 {product.location}</p>
+              )}
             </div>
 
             {/* Price Section */}
             <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl p-5 border border-border">
               <div className="flex items-end gap-3 mb-2">
-                <span className="text-3xl md:text-4xl font-bold text-primary">{product.priceText}</span>
-                {product.originalPrice && (
-                  <span className="text-lg text-muted-foreground line-through">{product.originalPrice}</span>
-                )}
+                <span className="text-3xl md:text-4xl font-bold text-primary">{formatPrice(product.price)}</span>
               </div>
-              {product.discount && (
-                <span className="inline-block bg-red-100 text-red-600 text-sm font-medium px-3 py-1 rounded-full">
-                  Hemat {product.discount}%
-                </span>
-              )}
+              <span className="inline-block bg-blue-100 text-blue-600 text-sm font-medium px-3 py-1 rounded-full">
+                {getConditionLabel(product.condition_status)}
+              </span>
             </div>
 
             {/* Quantity */}
@@ -352,7 +296,9 @@ export default function ProductDetail() {
                     <Plus size={16} />
                   </button>
                 </div>
-                <span className="text-sm text-muted-foreground">Stok tersedia</span>
+                <span className="text-sm text-muted-foreground">
+                  {product.stock ? `${product.stock} tersedia` : "Stok tersedia"}
+                </span>
               </div>
             </div>
 
@@ -390,47 +336,53 @@ export default function ProductDetail() {
             </div>
 
             {/* Seller Card */}
-            <Link to={`/partner/${product.seller.id}`}>
-              <motion.div
-                whileHover={{ scale: 1.01 }}
-                className="bg-card border border-border rounded-2xl p-4 hover:shadow-md transition-all cursor-pointer"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <img
-                      src={product.seller.logo}
-                      alt={product.seller.name}
-                      className="w-14 h-14 rounded-xl object-cover"
-                    />
-                    {product.seller.verified && (
-                      <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center">
-                        <CheckCircle size={12} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-semibold truncate">{product.seller.name}</h4>
-                      {product.seller.verified && (
-                        <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded">Verified</span>
+            {product.seller && (
+              <Link to={`/partner/${product.seller.id}`}>
+                <motion.div
+                  whileHover={{ scale: 1.01 }}
+                  className="bg-card border border-border rounded-2xl p-4 hover:shadow-md transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <img
+                        src={product.seller.profile_picture_url || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop"}
+                        alt={product.seller.full_name}
+                        className="w-14 h-14 rounded-xl object-cover"
+                      />
+                      {product.seller.seller_code && (
+                        <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white w-5 h-5 rounded-full flex items-center justify-center">
+                          <CheckCircle size={12} />
+                        </div>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        {product.seller.rating}
-                      </span>
-                      <span>•</span>
-                      <span>{product.seller.reviews} ulasan</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold truncate">{product.seller.full_name || product.seller.username}</h4>
+                        {product.seller.seller_code && (
+                          <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded">Verified</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          Penjual
+                        </span>
+                        {product.seller.city && (
+                          <>
+                            <span>•</span>
+                            <span>{product.seller.city}</span>
+                          </>
+                        )}
+                      </div>
                     </div>
+                    <Button variant="outline" size="sm" className="rounded-full" onClick={(e) => e.preventDefault()}>
+                      <MessageCircle className="w-4 h-4 mr-1" />
+                      Chat
+                    </Button>
                   </div>
-                  <Button variant="outline" size="sm" className="rounded-full" onClick={(e) => e.preventDefault()}>
-                    <MessageCircle className="w-4 h-4 mr-1" />
-                    Chat
-                  </Button>
-                </div>
-              </motion.div>
-            </Link>
+                </motion.div>
+              </Link>
+            )}
           </motion.div>
         </div>
 
@@ -444,7 +396,9 @@ export default function ProductDetail() {
             className="bg-card border border-border rounded-2xl p-6"
           >
             <h3 className="text-lg font-semibold mb-4">Deskripsi Produk</h3>
-            <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{product.description}</p>
+            <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+              {product.description || "Tidak ada deskripsi tersedia."}
+            </p>
           </motion.div>
 
           {/* Specifications */}
@@ -456,16 +410,22 @@ export default function ProductDetail() {
           >
             <h3 className="text-lg font-semibold mb-4">Spesifikasi</h3>
             <div className="space-y-3">
-              {product.specs?.map((spec, i) => (
-                <div
-                  key={i}
-                  className={`flex justify-between gap-4 py-3 ${i !== (product.specs?.length ?? 0) - 1 ? "border-b border-border" : ""
-                    }`}
-                >
-                  <span className="text-muted-foreground">{spec.label}</span>
-                  <span className="font-medium text-right">{spec.value}</span>
-                </div>
-              ))}
+              <div className="flex justify-between gap-4 py-3 border-b border-border">
+                <span className="text-muted-foreground">Kategori</span>
+                <span className="font-medium text-right">{product.category?.name || "-"}</span>
+              </div>
+              <div className="flex justify-between gap-4 py-3 border-b border-border">
+                <span className="text-muted-foreground">Kondisi</span>
+                <span className="font-medium text-right">{getConditionLabel(product.condition_status)}</span>
+              </div>
+              <div className="flex justify-between gap-4 py-3 border-b border-border">
+                <span className="text-muted-foreground">Lokasi</span>
+                <span className="font-medium text-right">{product.location || "-"}</span>
+              </div>
+              <div className="flex justify-between gap-4 py-3">
+                <span className="text-muted-foreground">Status</span>
+                <span className="font-medium text-right capitalize">{product.status || "-"}</span>
+              </div>
             </div>
           </motion.div>
         </div>

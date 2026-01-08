@@ -1,0 +1,1655 @@
+{
+  "meta": {
+    "format": "httpie",
+    "version": "1.0.0",
+    "contentType": "collection",
+    "schema": "https://schema.httpie.io/1.0.0.json",
+    "docs": "https://httpie.io/r/help/export-from-httpie",
+    "source": "HTTPie Desktop 2025.2.0"
+  },
+  "entry": {
+    "name": "Reloop E-Commerce API",
+    "icon": {
+      "name": "paperPencil",
+      "color": "blue"
+    },
+    "auth": {
+      "type": "bearer",
+      "target": "headers",
+      "credentials": {
+        "username": "",
+        "password": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FwaS1yZWxvb3AtcHJvZHVjdGlvbi51cC5yYWlsd2F5LmFwcC9hcGkvYXV0aC9sb2dpbiIsImlhdCI6MTc2NzQxODg2NSwiZXhwIjoxNzY3NDIyNDY1LCJuYmYiOjE3Njc0MTg4NjUsImp0aSI6IjBjT1VoTElwandmeEgxSTMiLCJzdWIiOiI3MSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.43Hq9B49hDg9edWTbGRNFFb31SbxMC5YEnLWwLHzyDI"
+      }
+    },
+    "requests": [
+      {
+        "name": "🔐 Auth - Register",
+        "url": "{{reloop_url}}/api/auth/register",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "none"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "username",
+                "value": "johndoe",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "email",
+                "value": "john@example.com",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "password",
+                "value": "password123",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "password_confirmation",
+                "value": "password123",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "full_name",
+                "value": "John Doe",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "phone_number",
+                "value": "081234567890",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "seller_code",
+                "value": "SELLER123",
+                "enabled": false,
+                "type": "text"
+              },
+              {
+                "name": "bio",
+                "value": "I love buying and selling electronics",
+                "enabled": false,
+                "type": "text"
+              },
+              {
+                "name": "city",
+                "value": "Jakarta",
+                "enabled": false,
+                "type": "text"
+              },
+              {
+                "name": "address",
+                "value": "Jl. Sudirman No. 123",
+                "enabled": false,
+                "type": "text"
+              },
+              {
+                "name": "profile_picture_url",
+                "value": "https://example.com/profile/john.jpg",
+                "enabled": false,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🔐 Auth - Login",
+        "url": "{{reloop_url}}/api/auth/login",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "form",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": [
+              {
+                "name": "email",
+                "value": "john@example.com",
+                "enabled": true,
+                "type": "text"
+              },
+              {
+                "name": "password",
+                "value": "password123",
+                "enabled": true,
+                "type": "text"
+              }
+            ]
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🔐 Auth - Get Current User",
+        "url": "{{reloop_url}}/api/auth/me",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🔐 Auth - Logout",
+        "url": "{{reloop_url}}/api/auth/logout",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🔐 Auth - Refresh Token",
+        "url": "{{reloop_url}}/api/auth/refresh",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📁 Categories - Get All",
+        "url": "{{reloop_url}}/api/v1/categories",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": true
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📁 Categories - Get Single",
+        "url": "{{reloop_url}}/api/v1/categories/1",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📁 Categories - Create",
+        "url": "{{/v1/categories",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"name\": \"Electronics\",\n  \"slug\": \"electronics\",\n  \"icon_url\": \"https://example.com/icons/electronics.png\"\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📁 Categories - Update",
+        "url": "{{base_url}}/v1/categories/1",
+        "method": "PUT",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"name\": \"Electronics & Gadgets\",\n  \"slug\": \"electronics-gadgets\",\n  \"icon_url\": \"https://example.com/icons/electronics-new.png\"\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📁 Categories - Delete",
+        "url": "{{base_url}}/v1/categories/1",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📦 Products - Get All",
+        "url": "{{reloop_url}}/api/v1/products",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          },
+          {
+            "name": "status",
+            "value": "active",
+            "enabled": false
+          },
+          {
+            "name": "category_id",
+            "value": "1",
+            "enabled": false
+          },
+          {
+            "name": "seller_id",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "condition_status",
+            "value": "new_with_tag",
+            "enabled": false
+          },
+          {
+            "name": "search",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "min_price",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "max_price",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "sort_by",
+            "value": "created_at",
+            "enabled": false
+          },
+          {
+            "name": "sort_order",
+            "value": "desc",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📦 Products - Get Single",
+        "url": "{{base_url}}/v1/products/1",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📦 Products - Create",
+        "url": "{{base_url}}/v1/products",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"category_id\": 1,\n  \"name\": \"iPhone 12 Pro Max\",\n  \"description\": \"iPhone 12 Pro Max 256GB, excellent condition, complete with box\",\n  \"price\": 8500000,\n  \"condition_status\": \"like_new\",\n  \"stock\": 1,\n  \"location\": \"Jakarta Selatan\",\n  \"status\": \"active\",\n  \"images\": [\n    \"https://example.com/images/iphone-1.jpg\",\n    \"https://example.com/images/iphone-2.jpg\",\n    \"https://example.com/images/iphone-3.jpg\"\n  ],\n  \"primary_image_index\": 0\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📦 Products - Update",
+        "url": "{{base_url}}/v1/products/1",
+        "method": "PUT",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"name\": \"iPhone 12 Pro Max - Updated\",\n  \"price\": 8000000,\n  \"stock\": 0,\n  \"status\": \"sold\"\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📦 Products - Delete",
+        "url": "{{base_url}}/v1/products/1",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "📦 Products - Get My Products",
+        "url": "{{base_url}}/v1/products/my-products",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🖼️ Product Images - Get All",
+        "url": "{{base_url}}/v1/products/1/images",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🖼️ Product Images - Add",
+        "url": "{{base_url}}/v1/product-images",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"product_id\": 1,\n  \"image_url\": \"https://example.com/images/new-image.jpg\",\n  \"is_primary\": false\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🖼️ Product Images - Update",
+        "url": "{{base_url}}/v1/product-images/1",
+        "method": "PUT",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"image_url\": \"https://example.com/images/updated-image.jpg\",\n  \"is_primary\": true\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "🖼️ Product Images - Delete",
+        "url": "{{base_url}}/v1/product-images/1",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💬 Messages - Get All",
+        "url": "{{base_url}}/v1/messages",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          },
+          {
+            "name": "user_id",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "product_id",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "is_read",
+            "value": "",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💬 Messages - Send",
+        "url": "{{base_url}}/v1/messages",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"receiver_id\": 2,\n  \"product_id\": 1,\n  \"message_text\": \"Is this item still available?\"\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💬 Messages - Get Single",
+        "url": "{{base_url}}/v1/messages/1",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💬 Messages - Update (Mark as Read)",
+        "url": "{{base_url}}/v1/messages/1",
+        "method": "PUT",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"is_read\": true\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💬 Messages - Delete",
+        "url": "{{base_url}}/v1/messages/1",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💬 Messages - Get Conversations",
+        "url": "{{base_url}}/v1/messages/conversations",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💬 Messages - Mark Multiple as Read",
+        "url": "{{base_url}}/v1/messages/mark-as-read",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"message_ids\": [1, 2, 3, 4, 5]\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💳 Transactions - Get All",
+        "url": "{{base_url}}/v1/transactions",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          },
+          {
+            "name": "status",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "role",
+            "value": "",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💳 Transactions - Create (Purchase)",
+        "url": "{{base_url}}/v1/transactions",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"product_id\": 1,\n  \"deal_price\": 8300000\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💳 Transactions - Get Single",
+        "url": "{{base_url}}/v1/transactions/1",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💳 Transactions - Update Status",
+        "url": "{{base_url}}/v1/transactions/1",
+        "method": "PUT",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"status\": \"completed\"\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💳 Transactions - Get My Purchases",
+        "url": "{{base_url}}/v1/transactions/my-purchases",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "💳 Transactions - Get My Sales",
+        "url": "{{base_url}}/v1/transactions/my-sales",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Get All",
+        "url": "{{base_url}}/v1/reviews",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          },
+          {
+            "name": "target_user_id",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "reviewer_id",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "rating",
+            "value": "",
+            "enabled": false
+          },
+          {
+            "name": "min_rating",
+            "value": "",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Create",
+        "url": "{{base_url}}/v1/reviews",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"transaction_id\": 1,\n  \"target_user_id\": 2,\n  \"rating\": 5,\n  \"comment\": \"Great seller! Fast response and item as described.\"\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Get Single",
+        "url": "{{base_url}}/v1/reviews/1",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Update",
+        "url": "{{base_url}}/v1/reviews/1",
+        "method": "PUT",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"rating\": 4,\n  \"comment\": \"Good seller, but slightly delayed response.\"\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Delete",
+        "url": "{{base_url}}/v1/reviews/1",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Get My Reviews",
+        "url": "{{base_url}}/v1/reviews/my-reviews",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Get Received Reviews",
+        "url": "{{base_url}}/v1/reviews/received",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "⭐ Reviews - Get User Rating Statistics",
+        "url": "{{base_url}}/v1/reviews/user-rating/2",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "❤️ Wishlist - Get My Wishlist",
+        "url": "{{base_url}}/v1/wishlist",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [
+          {
+            "name": "per_page",
+            "value": "15",
+            "enabled": false
+          }
+        ],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "❤️ Wishlist - Add to Wishlist",
+        "url": "{{base_url}}/v1/wishlist",
+        "method": "POST",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "text",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "{\n  \"product_id\": 1\n}",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "❤️ Wishlist - Get Wishlist Item",
+        "url": "{{base_url}}/v1/wishlist/1",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "❤️ Wishlist - Remove from Wishlist",
+        "url": "{{base_url}}/v1/wishlist/1",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "❤️ Wishlist - Remove by Product ID",
+        "url": "{{base_url}}/v1/wishlist/product/1",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "❤️ Wishlist - Check Product in Wishlist",
+        "url": "{{base_url}}/v1/wishlist/check/1",
+        "method": "GET",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      },
+      {
+        "name": "❤️ Wishlist - Clear Wishlist",
+        "url": "{{base_url}}/v1/wishlist/clear",
+        "method": "DELETE",
+        "headers": [],
+        "queryParams": [],
+        "pathParams": [],
+        "auth": {
+          "type": "inherited"
+        },
+        "body": {
+          "type": "none",
+          "file": {
+            "name": ""
+          },
+          "text": {
+            "value": "",
+            "format": "application/json"
+          },
+          "form": {
+            "isMultipart": false,
+            "fields": []
+          },
+          "graphql": {
+            "query": "",
+            "variables": ""
+          }
+        }
+      }
+    ]
+  }
+}

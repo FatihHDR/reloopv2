@@ -1,93 +1,126 @@
-import { useState } from 'react';
-import { Heart, Trash2, ShoppingCart, Grid, List, Home, ShoppingBag, PackageSearch, Info } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Heart, Trash2, ShoppingCart, Grid, List, Home, ShoppingBag, PackageSearch, Info, Loader2 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Component as Footer } from "../footer-taped-design";
 import { Button } from './button';
 import { NavBar } from './tubelight-navbar';
+import { wishlistService, getToken } from '../../services';
+import type { WishlistItem } from '../../types/api';
 
 const navItems = [
     { name: "Home", url: "/", icon: Home },
-    { name: "Shop", url: "#shop", icon: ShoppingBag },
-    { name: "Categories", url: "#categories", icon: PackageSearch },
+    { name: "Shop", url: "/shop", icon: ShoppingBag },
+    { name: "Categories", url: "/shop#categories", icon: PackageSearch },
     { name: "About", url: "/about", icon: Info },
 ];
 
-type WishlistItem = {
-    id: number;
-    imageSrc: string;
-    title: string;
-    seller: string;
-    sellerAvatar: string;
-    price: string;
-    originalPrice?: string;
-    discount?: number;
-    condition: string;
-    stock: number;
-};
-
 export default function WishlistPage() {
+    const navigate = useNavigate();
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([
-        {
-            id: 1,
-            imageSrc: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop",
-            title: "Vintage Oak Chair - Mid Century Modern Design",
-            seller: "KosKita Thrift",
-            sellerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-            price: "Rp 250.000",
-            originalPrice: "Rp 500.000",
-            discount: 50,
-            condition: "Like New",
-            stock: 1,
-        },
-        {
-            id: 2,
-            imageSrc: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop",
-            title: "Sony WH-1000XM4 Wireless Headphones",
-            seller: "ElectroSwap",
-            sellerAvatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
-            price: "Rp 1.800.000",
-            originalPrice: "Rp 4.500.000",
-            discount: 60,
-            condition: "Good",
-            stock: 1,
-        },
-        {
-            id: 3,
-            imageSrc: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&auto=format&fit=crop",
-            title: "Coach Leather Handbag - Authentic",
-            seller: "ThriftThreads",
-            sellerAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-            price: "Rp 2.500.000",
-            originalPrice: "Rp 6.000.000",
-            discount: 58,
-            condition: "Like New",
-            stock: 1,
-        },
-        {
-            id: 4,
-            imageSrc: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop",
-            title: "Classics Literature Collection - 10 Books",
-            seller: "BookLovers ID",
-            sellerAvatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=100&h=100&fit=crop",
-            price: "Rp 450.000",
-            originalPrice: "Rp 750.000",
-            discount: 40,
-            condition: "Good",
-            stock: 2,
-        },
-    ]);
+    const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const removeFromWishlist = (id: number) => {
-        setWishlistItems(items => items.filter(item => item.id !== id));
+    // Fetch wishlist on mount
+    useEffect(() => {
+        const fetchWishlist = async () => {
+            // Check if user is logged in
+            if (!getToken()) {
+                navigate('/login');
+                return;
+            }
+
+            try {
+                setLoading(true);
+                setError(null);
+                const response = await wishlistService.getAll({ per_page: 50 });
+                setWishlistItems(response.data || []);
+            } catch (err) {
+                console.error('Error fetching wishlist:', err);
+                setError('Gagal memuat wishlist. Silakan coba lagi.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWishlist();
+    }, [navigate]);
+
+    const removeFromWishlist = async (id: number) => {
+        try {
+            await wishlistService.remove(id);
+            setWishlistItems(items => items.filter(item => item.id !== id));
+        } catch (err) {
+            console.error('Error removing from wishlist:', err);
+        }
     };
 
-    const getConditionColor = (condition: string) => {
-        if (condition === "Like New") return "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400";
-        if (condition === "Good") return "text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400";
+    const getConditionColor = (condition?: string) => {
+        if (condition === "like_new") return "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400";
+        if (condition === "new_with_tag") return "text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-400";
+        if (condition === "good") return "text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400";
         return "text-amber-600 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400";
     };
+
+    const getConditionLabel = (condition?: string) => {
+        switch (condition) {
+            case "new_with_tag": return "New with Tag";
+            case "like_new": return "Like New";
+            case "good": return "Good";
+            case "fair": return "Fair";
+            default: return condition || "Unknown";
+        }
+    };
+
+    // Format price to Indonesian Rupiah
+    const formatPrice = (price?: number) => {
+        if (!price) return 'Rp 0';
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(price);
+    };
+
+    // Get primary image URL
+    const getImageUrl = (product?: WishlistItem['product']) => {
+        if (!product) return "https://images.unsplash.com/photo-1560393464-5c69a73c5770?w=800&auto=format&fit=crop";
+        if (product.primary_image?.image_url) return product.primary_image.image_url;
+        if (product.images && product.images.length > 0) return product.images[0].image_url;
+        return "https://images.unsplash.com/photo-1560393464-5c69a73c5770?w=800&auto=format&fit=crop";
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background">
+                <NavBar items={navItems} />
+                <div className="flex items-center justify-center min-h-[60vh]">
+                    <div className="flex flex-col items-center gap-4">
+                        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                        <p className="text-muted-foreground">Memuat wishlist...</p>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-background">
+                <NavBar items={navItems} />
+                <div className="flex items-center justify-center min-h-[60vh]">
+                    <div className="text-center">
+                        <p className="text-red-500 mb-4">{error}</p>
+                        <Button onClick={() => window.location.reload()}>Coba Lagi</Button>
+                    </div>
+                </div>
+                <Footer />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-background">
@@ -146,15 +179,10 @@ export default function WishlistPage() {
                                         {/* Image */}
                                         <div className="relative aspect-square overflow-hidden bg-muted">
                                             <img
-                                                src={item.imageSrc}
-                                                alt={item.title}
+                                                src={getImageUrl(item.product)}
+                                                alt={item.product?.name || 'Product'}
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                             />
-                                            {item.discount && (
-                                                <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                                                    -{item.discount}%
-                                                </span>
-                                            )}
                                             <button
                                                 onClick={() => removeFromWishlist(item.id)}
                                                 className="absolute top-3 right-3 w-8 h-8 bg-white/90 dark:bg-black/70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white dark:hover:bg-black"
@@ -165,27 +193,28 @@ export default function WishlistPage() {
 
                                         {/* Content */}
                                         <div className="p-4">
-                                            <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded mb-2 ${getConditionColor(item.condition)}`}>
-                                                {item.condition}
+                                            <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded mb-2 ${getConditionColor(item.product?.condition_status)}`}>
+                                                {getConditionLabel(item.product?.condition_status)}
                                             </span>
                                             <h3 className="font-medium text-sm line-clamp-2 mb-2 min-h-[40px]">
-                                                {item.title}
+                                                {item.product?.name || 'Unknown Product'}
                                             </h3>
                                             <div className="flex items-center gap-2 mb-3">
-                                                <img src={item.sellerAvatar} alt={item.seller} className="w-5 h-5 rounded-full" />
-                                                <span className="text-xs text-muted-foreground">{item.seller}</span>
+                                                {item.product?.seller?.profile_picture_url && (
+                                                    <img src={item.product.seller.profile_picture_url} alt={item.product.seller.full_name} className="w-5 h-5 rounded-full" />
+                                                )}
+                                                <span className="text-xs text-muted-foreground">{item.product?.seller?.full_name || item.product?.seller?.username}</span>
                                             </div>
                                             <div className="flex items-center gap-2 mb-4">
-                                                <span className="text-lg font-bold text-primary">{item.price}</span>
-                                                {item.originalPrice && (
-                                                    <span className="text-sm text-muted-foreground line-through">{item.originalPrice}</span>
-                                                )}
+                                                <span className="text-lg font-bold text-primary">{formatPrice(item.product?.price)}</span>
                                             </div>
                                             <div className="flex gap-2">
-                                                <Button size="sm" className="flex-1 rounded-lg">
-                                                    <ShoppingCart size={14} className="mr-1.5" />
-                                                    Add to Cart
-                                                </Button>
+                                                <Link to={`/product/${item.product_id}`} className="flex-1">
+                                                    <Button size="sm" className="w-full rounded-lg">
+                                                        <ShoppingCart size={14} className="mr-1.5" />
+                                                        View Product
+                                                    </Button>
+                                                </Link>
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
@@ -208,32 +237,26 @@ export default function WishlistPage() {
                                     >
                                         <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-muted">
                                             <img
-                                                src={item.imageSrc}
-                                                alt={item.title}
+                                                src={getImageUrl(item.product)}
+                                                alt={item.product?.name || 'Product'}
                                                 className="w-full h-full object-cover"
                                             />
-                                            {item.discount && (
-                                                <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
-                                                    -{item.discount}%
-                                                </span>
-                                            )}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-start justify-between gap-4">
                                                 <div className="min-w-0">
-                                                    <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded mb-2 ${getConditionColor(item.condition)}`}>
-                                                        {item.condition}
+                                                    <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded mb-2 ${getConditionColor(item.product?.condition_status)}`}>
+                                                        {getConditionLabel(item.product?.condition_status)}
                                                     </span>
-                                                    <h3 className="font-medium line-clamp-1 mb-1">{item.title}</h3>
+                                                    <h3 className="font-medium line-clamp-1 mb-1">{item.product?.name}</h3>
                                                     <div className="flex items-center gap-2 mb-2">
-                                                        <img src={item.sellerAvatar} alt={item.seller} className="w-4 h-4 rounded-full" />
-                                                        <span className="text-xs text-muted-foreground">{item.seller}</span>
+                                                        {item.product?.seller?.profile_picture_url && (
+                                                            <img src={item.product.seller.profile_picture_url} alt={item.product.seller.full_name} className="w-4 h-4 rounded-full" />
+                                                        )}
+                                                        <span className="text-xs text-muted-foreground">{item.product?.seller?.full_name}</span>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-lg font-bold text-primary">{item.price}</span>
-                                                        {item.originalPrice && (
-                                                            <span className="text-sm text-muted-foreground line-through">{item.originalPrice}</span>
-                                                        )}
+                                                        <span className="text-lg font-bold text-primary">{formatPrice(item.product?.price)}</span>
                                                     </div>
                                                 </div>
                                                 <button
@@ -244,12 +267,14 @@ export default function WishlistPage() {
                                                 </button>
                                             </div>
                                             <div className="flex gap-2 mt-3">
-                                                <Button size="sm" className="rounded-lg">
-                                                    <ShoppingCart size={14} className="mr-1.5" />
-                                                    Add to Cart
-                                                </Button>
-                                                <Button size="sm" variant="outline" className="rounded-lg">
-                                                    Buy Now
+                                                <Link to={`/product/${item.product_id}`}>
+                                                    <Button size="sm" className="rounded-lg">
+                                                        <ShoppingCart size={14} className="mr-1.5" />
+                                                        View Product
+                                                    </Button>
+                                                </Link>
+                                                <Button size="sm" variant="outline" className="rounded-lg" onClick={() => removeFromWishlist(item.id)}>
+                                                    Remove
                                                 </Button>
                                             </div>
                                         </div>
@@ -271,7 +296,7 @@ export default function WishlistPage() {
                         <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                             Save items you love by clicking the heart icon on any product
                         </p>
-                        <Link to="/">
+                        <Link to="/shop">
                             <Button className="rounded-lg">
                                 Start Shopping
                             </Button>

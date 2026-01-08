@@ -1,113 +1,135 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "./button"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Sliders, X, Star, ArrowUpRight, Sparkles, TrendingUp, Store } from "lucide-react"
-
-type Product = {
-  id: number
-  title: string
-  price: number
-  priceText: string
-  image: string
-  condition?: string
-  popularity?: number
-  partnerId?: number
-  category?: string
-}
-
-type Partner = {
-  id: number
-  name: string
-  logo?: string
-  description?: string
-  rating?: number
-  verified?: boolean
-  products: Product[]
-}
-
-const partnersData: Partner[] = [
-  {
-    id: 1,
-    name: "KosKita Thrift",
-    logo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
-    description: "Preloved home & decor from kost sellers.",
-    rating: 4.8,
-    verified: true,
-    products: [
-      { id: 11, title: "Wooden Chair", price: 120000, priceText: "Rp 120.000", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop", condition: "Good", popularity: 45, partnerId: 1, category: "Furniture" },
-      { id: 12, title: "Bedside Lamp", price: 80000, priceText: "Rp 80.000", image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&auto=format&fit=crop", condition: "Like New", popularity: 32, partnerId: 1, category: "Electronics" },
-      { id: 13, title: "Coffee Table", price: 150000, priceText: "Rp 150.000", image: "https://images.unsplash.com/photo-1532372320572-cda2b58bb6b9?w=800&auto=format&fit=crop", condition: "Good", popularity: 28, partnerId: 1, category: "Furniture" },
-    ],
-  },
-  {
-    id: 2,
-    name: "ThriftThreads",
-    logo: "https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=200&h=200&fit=crop",
-    description: "Curated second-hand clothing and accessories.",
-    rating: 4.9,
-    verified: true,
-    products: [
-      { id: 21, title: "Denim Jacket", price: 150000, priceText: "Rp 150.000", image: "https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=800&auto=format&fit=crop", condition: "Good", popularity: 72, partnerId: 2, category: "Fashion" },
-      { id: 22, title: "Vintage Tee", price: 45000, priceText: "Rp 45.000", image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&auto=format&fit=crop", condition: "Fair", popularity: 55, partnerId: 2, category: "Fashion" },
-      { id: 23, title: "Black Jeans", price: 120000, priceText: "Rp 120.000", image: "https://images.unsplash.com/photo-1542272604-787c62d465d1?w=800&auto=format&fit=crop", condition: "Good", popularity: 68, partnerId: 2, category: "Fashion" },
-    ],
-  },
-  {
-    id: 3,
-    name: "ElectroSwap",
-    logo: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=200&h=200&fit=crop",
-    description: "Used electronics checked and tested.",
-    rating: 4.7,
-    verified: true,
-    products: [
-      { id: 31, title: "Portable Speaker", price: 200000, priceText: "Rp 200.000", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop", condition: "Good", popularity: 88, partnerId: 3, category: "Audio" },
-      { id: 32, title: "Wireless Headphones", price: 250000, priceText: "Rp 250.000", image: "https://images.unsplash.com/photo-1505470468204-1771b0007033?w=800&auto=format&fit=crop", condition: "Like New", popularity: 95, partnerId: 3, category: "Audio" },
-    ],
-  },
-]
+import { Search, Sliders, X, Star, ArrowUpRight, Sparkles, TrendingUp, Store, Loader2 } from "lucide-react"
+import { productService, categoryService } from "../../services"
+import type { Product, Category } from "../../types/api"
 
 export default function ShopPage() {
-  const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null)
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [query, setQuery] = useState("")
   const [sort, setSort] = useState<"popular" | "price-asc" | "price-desc">("popular")
   const [filtersOpen, setFiltersOpen] = useState(false)
 
-  const allProducts = useMemo(() => {
-    return partnersData.flatMap((p) => p.products.map((prd) => ({ ...prd, partner: { id: p.id, name: p.name, logo: p.logo, rating: p.rating, verified: p.verified } })))
-  }, [])
+  // Fetch products and categories on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
 
-  const filteredProducts = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    let list = allProducts.filter((prd) => {
-      if (!q) return true
-      return prd.title.toLowerCase().includes(q) || (prd.partner?.name ?? "").toLowerCase().includes(q)
-    })
+        const [productsRes, categoriesRes] = await Promise.all([
+          productService.getAll({ per_page: 50 }),
+          categoryService.getAll({ per_page: 20 })
+        ])
 
-    if (selectedPartner) {
-      list = list.filter((prd) => prd.partnerId === selectedPartner.id)
+        setProducts(productsRes.data || [])
+        setCategories(categoriesRes.data || [])
+      } catch (err) {
+        console.error('Error fetching data:', err)
+        setError('Gagal memuat data. Silakan coba lagi.')
+      } finally {
+        setLoading(false)
+      }
     }
 
-    if (sort === "popular") list = list.sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
-    if (sort === "price-asc") list = list.sort((a, b) => a.price - b.price)
-    if (sort === "price-desc") list = list.sort((a, b) => b.price - a.price)
+    fetchData()
+  }, [])
+
+  // Filter and sort products
+  const filteredProducts = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    let list = products.filter((prd) => {
+      if (!q) return true
+      return prd.name?.toLowerCase().includes(q) || prd.description?.toLowerCase().includes(q)
+    })
+
+    if (selectedCategory) {
+      list = list.filter((prd) => prd.category_id === selectedCategory.id)
+    }
+
+    // Sort products
+    if (sort === "popular") {
+      // Use created_at as proxy for popularity if no views field
+      list = [...list].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    }
+    if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price)
+    if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price)
 
     return list
-  }, [allProducts, query, sort, selectedPartner])
+  }, [products, query, sort, selectedCategory])
 
-  const popularItems = useMemo(() => [...allProducts].sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0)).slice(0, 6), [allProducts])
+  // Popular items - first 6
+  const popularItems = useMemo(() => filteredProducts.slice(0, 6), [filteredProducts])
 
+  // Format price to Indonesian Rupiah
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price)
+  }
+
+  // Get condition display style
   const getConditionStyle = (condition?: string) => {
     switch (condition) {
-      case "Like New":
+      case "like_new":
         return "bg-green-100 text-green-700 border-green-200"
-      case "Good":
+      case "new_with_tag":
+        return "bg-emerald-100 text-emerald-700 border-emerald-200"
+      case "good":
         return "bg-blue-100 text-blue-700 border-blue-200"
-      case "Fair":
+      case "fair":
         return "bg-yellow-100 text-yellow-700 border-yellow-200"
       default:
         return "bg-gray-100 text-gray-700 border-gray-200"
     }
+  }
+
+  const getConditionLabel = (condition?: string) => {
+    switch (condition) {
+      case "new_with_tag": return "New with Tag"
+      case "like_new": return "Like New"
+      case "good": return "Good"
+      case "fair": return "Fair"
+      default: return condition || "Unknown"
+    }
+  }
+
+  // Get primary image URL
+  const getImageUrl = (product: Product) => {
+    if (product.primary_image?.image_url) return product.primary_image.image_url
+    if (product.images && product.images.length > 0) return product.images[0].image_url
+    return "https://images.unsplash.com/photo-1560393464-5c69a73c5770?w=800&auto=format&fit=crop"
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <p className="text-muted-foreground">Memuat produk...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Coba Lagi</Button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -152,116 +174,95 @@ export default function ShopPage() {
       </div>
 
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-10">
-        {/* Featured Partners */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="mb-12"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-              <Store className="w-5 h-5 text-primary" />
+        {/* Categories Section */}
+        {categories.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Store className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Kategori</h2>
+                <p className="text-sm text-muted-foreground">Pilih kategori yang kamu cari</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-bold">Mitra Unggulan</h2>
-              <p className="text-sm text-muted-foreground">Toko terpercaya dengan produk berkualitas</p>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {partnersData.map((partner, index) => (
-              <motion.div
-                key={partner.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index }}
-                whileHover={{ scale: 1.02, y: -4 }}
-                onClick={() => setSelectedPartner(selectedPartner?.id === partner.id ? null : partner)}
-                className={`bg-gradient-to-br from-muted/40 to-muted/20 backdrop-blur-sm rounded-2xl p-5 border transition-all cursor-pointer ${selectedPartner?.id === partner.id
-                  ? "border-primary ring-2 ring-primary/20 shadow-lg"
-                  : "border-border/50 hover:border-primary/50 hover:shadow-md"
-                  }`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="relative">
-                    <img src={partner.logo} alt={partner.name} className="w-16 h-16 rounded-xl object-cover shadow-md" />
-                    {partner.verified && (
-                      <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center shadow">
-                        ✓
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-lg truncate">{partner.name}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-2">{partner.description}</p>
-                    <div className="flex items-center gap-3 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{partner.rating}</span>
-                      </div>
-                      <span className="text-muted-foreground">•</span>
-                      <span className="text-muted-foreground">{partner.products.length} produk</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 flex gap-2">
-                  <Link to={`/partner/${partner.id}`} className="flex-1" onClick={(e) => e.stopPropagation()}>
-                    <Button variant="outline" size="sm" className="w-full rounded-full">
-                      Kunjungi Toko
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Popular Items */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="mb-12"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-orange-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold">Sedang Populer</h2>
-              <p className="text-sm text-muted-foreground">Produk yang banyak diminati</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {popularItems.map((prd, index) => (
-              <Link key={prd.id} to={`/product/${prd.id}`}>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {categories.map((category, index) => (
                 <motion.div
+                  key={category.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 * index }}
-                  whileHover={{ scale: 1.03, y: -4 }}
-                  className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all group"
+                  transition={{ delay: 0.1 * index }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  onClick={() => setSelectedCategory(selectedCategory?.id === category.id ? null : category)}
+                  className={`bg-gradient-to-br from-muted/40 to-muted/20 backdrop-blur-sm rounded-2xl p-4 border transition-all cursor-pointer text-center ${selectedCategory?.id === category.id
+                    ? "border-primary ring-2 ring-primary/20 shadow-lg"
+                    : "border-border/50 hover:border-primary/50 hover:shadow-md"
+                    }`}
                 >
-                  <div className="relative aspect-square overflow-hidden">
-                    <img src={prd.image} alt={prd.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                    {prd.condition && (
-                      <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium border ${getConditionStyle(prd.condition)}`}>
-                        {prd.condition}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <h3 className="font-medium text-sm line-clamp-1">{prd.title}</h3>
-                    <p className="text-xs text-muted-foreground line-clamp-1">{prd.partner?.name}</p>
-                    <p className="font-bold text-primary mt-2">{prd.priceText}</p>
-                  </div>
+                  {category.icon_url && (
+                    <img src={category.icon_url} alt={category.name} className="w-12 h-12 mx-auto mb-2 rounded-lg object-cover" />
+                  )}
+                  <h3 className="font-medium text-sm">{category.name}</h3>
                 </motion.div>
-              </Link>
-            ))}
-          </div>
-        </motion.section>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* Popular Items */}
+        {popularItems.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Sedang Populer</h2>
+                <p className="text-sm text-muted-foreground">Produk yang banyak diminati</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {popularItems.map((prd, index) => (
+                <Link key={prd.id} to={`/product/${prd.id}`}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 * index }}
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all group"
+                  >
+                    <div className="relative aspect-square overflow-hidden">
+                      <img src={getImageUrl(prd)} alt={prd.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      {prd.condition_status && (
+                        <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium border ${getConditionStyle(prd.condition_status)}`}>
+                          {getConditionLabel(prd.condition_status)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3">
+                      <h3 className="font-medium text-sm line-clamp-1">{prd.name}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-1">{prd.seller?.full_name || prd.seller?.username}</p>
+                      <p className="font-bold text-primary mt-2">{formatPrice(prd.price)}</p>
+                    </div>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </motion.section>
+        )}
 
         {/* Search & Filter Section */}
         <div id="products" className="mb-8">
@@ -269,7 +270,7 @@ export default function ShopPage() {
             <div>
               <h2 className="text-2xl font-bold">Semua Produk</h2>
               <p className="text-sm text-muted-foreground">
-                {selectedPartner ? `Menampilkan produk dari ${selectedPartner.name}` : "Jelajahi semua katalog produk"}
+                {selectedCategory ? `Menampilkan produk dari kategori ${selectedCategory.name}` : "Jelajahi semua katalog produk"}
               </p>
             </div>
 
@@ -317,7 +318,7 @@ export default function ShopPage() {
                       </div>
                       <div className="space-y-2">
                         {[
-                          { value: "popular", label: "Paling Populer" },
+                          { value: "popular", label: "Terbaru" },
                           { value: "price-asc", label: "Harga: Terendah" },
                           { value: "price-desc", label: "Harga: Tertinggi" },
                         ].map((option) => (
@@ -344,7 +345,7 @@ export default function ShopPage() {
                           className="flex-1 rounded-full"
                           onClick={() => {
                             setSort("popular")
-                            setSelectedPartner(null)
+                            setSelectedCategory(null)
                           }}
                         >
                           Reset
@@ -360,15 +361,15 @@ export default function ShopPage() {
             </div>
           </div>
 
-          {selectedPartner && (
+          {selectedCategory && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               className="mb-4"
             >
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm">
-                <span>Filter: {selectedPartner.name}</span>
-                <button onClick={() => setSelectedPartner(null)} className="hover:bg-primary/20 rounded-full p-0.5">
+                <span>Kategori: {selectedCategory.name}</span>
+                <button onClick={() => setSelectedCategory(null)} className="hover:bg-primary/20 rounded-full p-0.5">
                   <X size={14} />
                 </button>
               </div>
@@ -393,10 +394,10 @@ export default function ShopPage() {
                   className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all group"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img src={prd.image} alt={prd.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    {prd.condition && (
-                      <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium border ${getConditionStyle(prd.condition)}`}>
-                        {prd.condition}
+                    <img src={getImageUrl(prd)} alt={prd.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {prd.condition_status && (
+                      <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium border ${getConditionStyle(prd.condition_status)}`}>
+                        {getConditionLabel(prd.condition_status)}
                       </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -404,19 +405,21 @@ export default function ShopPage() {
                   <div className="p-4">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold line-clamp-1">{prd.title}</h3>
-                        <p className="text-sm text-muted-foreground line-clamp-1">{prd.category}</p>
+                        <h3 className="font-semibold line-clamp-1">{prd.name}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-1">{prd.category?.name}</p>
                       </div>
-                      <img src={prd.partner?.logo} alt={prd.partner?.name} className="w-10 h-10 rounded-lg object-cover border border-border" />
+                      {prd.seller?.profile_picture_url && (
+                        <img src={prd.seller.profile_picture_url} alt={prd.seller.full_name} className="w-10 h-10 rounded-lg object-cover border border-border" />
+                      )}
                     </div>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xs text-muted-foreground">{prd.partner?.name}</span>
-                      {prd.partner?.verified && (
+                      <span className="text-xs text-muted-foreground">{prd.seller?.full_name || prd.seller?.username}</span>
+                      {prd.seller?.seller_code && (
                         <span className="bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded">✓</span>
                       )}
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-primary">{prd.priceText}</span>
+                      <span className="text-lg font-bold text-primary">{formatPrice(prd.price)}</span>
                       <Button size="sm" className="rounded-full">
                         Lihat
                       </Button>
@@ -435,7 +438,7 @@ export default function ShopPage() {
             </div>
             <h3 className="text-xl font-semibold mb-2">Tidak ada produk ditemukan</h3>
             <p className="text-muted-foreground mb-4">Coba kata kunci lain atau reset filter</p>
-            <Button variant="outline" onClick={() => { setQuery(""); setSelectedPartner(null) }}>
+            <Button variant="outline" onClick={() => { setQuery(""); setSelectedCategory(null) }}>
               Reset Pencarian
             </Button>
           </motion.div>
