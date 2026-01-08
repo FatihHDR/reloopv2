@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { motion } from "framer-motion"
+import { Link, useLocation } from "react-router-dom"
 import type { LucideProps } from "lucide-react"
 
 const cn = (...classes: (string | false | null | undefined)[]) =>
@@ -18,6 +19,18 @@ interface NavBarProps {
 
 export function NavBar({ items, className }: NavBarProps) {
   const [activeTab, setActiveTab] = useState(items[0].name)
+  const location = useLocation()
+
+  // Determine active tab based on current path
+  const getActiveTab = () => {
+    const currentPath = location.pathname
+    if (currentPath === "/about") return "About"
+    if (currentPath.startsWith("/shop")) return "Shop"
+    if (currentPath.startsWith("/product")) return "Shop" // Product detail juga dianggap bagian dari Shop
+    if (currentPath.startsWith("/partner")) return "Shop"
+    if (currentPath.startsWith("/categories")) return "Categories"
+    return "Home"
+  }
 
   return (
     <div
@@ -29,12 +42,12 @@ export function NavBar({ items, className }: NavBarProps) {
       <div className="flex items-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
         {items.map((item) => {
           const Icon = item.icon
-          const isActive = activeTab === item.name
+          const isActive = getActiveTab() === item.name || activeTab === item.name
 
           return (
-            <a
+            <Link
               key={item.name}
-              href={item.url}
+              to={item.url}
               onClick={() => setActiveTab(item.name)}
               className={cn(
                 "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",
@@ -64,7 +77,7 @@ export function NavBar({ items, className }: NavBarProps) {
                   </div>
                 </motion.div>
               )}
-            </a>
+            </Link>
           )
         })}
       </div>

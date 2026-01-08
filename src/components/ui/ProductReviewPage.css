@@ -1,0 +1,155 @@
+.review-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  color: black;
+  font-family: sans-serif;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 18px;
+}
+
+.back-button:hover {
+  background-color: #333;
+}
+
+.back-button:hover {
+  background: #000;
+  color: #fff;
+}
+
+.product-info {
+  display: flex;
+  gap: 15px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 16px;
+  margin-bottom: 20px;
+}
+
+.product-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.product-details h2 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+}
+
+.product-details p {
+  margin: 2px 0;
+  color: #666;
+}
+
+.stars {
+  display: flex;
+  gap: 5px;
+}
+
+.stars .star {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.stars .star:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s;
+}
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid #ddd;
+  resize: none;
+}
+
+.upload-section {
+  margin-bottom: 20px;
+}
+
+.upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.upload-area.dragging {
+  border-color: #000;
+  background: #f5f5f5;
+}
+
+.upload-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.file-preview {
+  margin-top: 10px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 12px;
+}
+
+.file-item button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #e74c3c;
+}
+
+.submit-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 14px 20px;        /* atas-bawah & kiri-kanan seimbang */
+  width: 100%;
+  border-radius: 14px;       /* tidak terlalu bulat */
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4;          /* bikin teks pas di tengah */
+}
+
+.submit-btn:hover {
+  background: #333;
+}

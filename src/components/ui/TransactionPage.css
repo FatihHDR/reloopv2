@@ -1,0 +1,510 @@
+.transaction-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  background: #fff;
+  color: #000;
+}
+
+/* Header */
+.transaction-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.transaction-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.5px;
+}
+
+.back-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background: #333;
+  transform: translateX(-2px);
+}
+
+.back-button:active {
+  background: #000;
+}
+
+/* Layout */
+.transaction-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.summary-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 24px;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.card h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+input, textarea, select {
+  padding: 11px 12px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+  color: #000;
+  transition: all 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #999;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.address-textarea {
+  min-height: 100px; /* lebih lega */
+  max-height: 150px; /* batasi tinggi */
+  resize: vertical;
+  padding: 0px;
+  line-height: 1.4;
+  border-radius: 8px;
+  border: 1px solid #d8d8d8;
+}
+
+.payment-select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 36px;
+}
+
+select option {
+  background: #fff;
+  color: #000;
+  padding: 8px 12px;
+}
+
+/* Bank Account Card */
+.bank-account-card {
+  background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+  border: 2px solid #000;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.account-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.account-row .label {
+  color: #666;
+  font-weight: 500;
+}
+
+.account-row .value {
+  color: #000;
+  font-weight: 600;
+}
+
+.account-number {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.account-note {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+/* Summary Card - now sticky on section */
+
+.order-items {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.order-items h3 {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  flex: 1;
+  color: #333;
+  font-weight: 500;
+}
+
+.item-qty {
+  color: #999;
+  margin: 0 8px;
+  min-width: 40px;
+  text-align: right;
+}
+
+.item-price {
+  color: #000;
+  font-weight: 600;
+  min-width: 80px;
+  text-align: right;
+}
+
+/* Order Number */
+.order-number {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.order-number .label {
+  color: #666;
+  font-weight: 500;
+}
+
+.order-number .value {
+  color: #000;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+
+/* Price Breakdown */
+.price-breakdown {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.price-row span:last-child {
+  color: #333;
+  font-weight: 500;
+}
+
+.price-row.discount span:last-child {
+  color: #2ecc71;
+  font-weight: 600;
+}
+
+.price-row.total {
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000;
+  padding-top: 8px;
+}
+
+.price-row.total span:last-child {
+  color: #000;
+  font-weight: 700;
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.btn-primary {
+  background: #000;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active:not(:disabled) {
+  background: #000;
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background: #d0d0d0;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #000;
+  border: 2px solid #000;
+}
+
+.btn-secondary:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  background: #e8e8e8;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .transaction-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-section {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .transaction-page {
+    padding: 16px;
+  }
+
+.transaction-header {
+  position: sticky;
+  top: 0;
+  background: #fff; /* Supaya nggak transparan */
+  z-index: 10;      /* Supaya selalu di atas */
+  padding: 16px 0;
+}
+
+  .transaction-header h1 {
+    font-size: 24px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-group label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  input, textarea, select {
+    padding: 10px 11px;
+    font-size: 13px;
+  }
+
+  textarea {
+    min-height: 80px;
+  }
+
+  .order-item {
+    font-size: 12px;
+  }
+
+  .price-row {
+    font-size: 12px;
+  }
+
+  .price-row.total {
+    font-size: 14px;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 11px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transaction-page {
+    padding: 12px;
+  }
+
+  .transaction-header {
+    margin-bottom: 16px;
+  }
+
+  .transaction-header h1 {
+    font-size: 20px;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .card h2 {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .form-group label {
+    font-size: 11px;
+  }
+
+  input, textarea, select {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .account-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .account-number {
+    font-size: 12px;
+  }
+
+  .order-item {
+    flex-wrap: wrap;
+  }
+
+  .item-qty, .item-price {
+    min-width: auto;
+  }
+}
