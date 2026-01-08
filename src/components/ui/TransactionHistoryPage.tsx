@@ -24,11 +24,25 @@ const TransactionHistoryPage = () => {
       }
 
       try {
-        const response = await api.get<{ data: Transaction[] }>('/api/v1/transactions/my-purchases');
-        setTransactions(response.data || []);
-      } catch (err) {
-        console.error('Error fetching transactions:', err);
-        setError('Gagal memuat riwayat transaksi');
+        // API returns transactions for the logged-in user
+        // Use role=buyer to get purchases (my-purchases endpoint doesn't exist on this backend)
+        const response = await api.get<{ data?: Transaction[] } | Transaction[]>('/api/v1/transactions?role=buyer');
+        console.log('[TransactionHistory] API Response:', response);
+
+        // Handle both wrapped { data: [...] } and direct array responses
+        let transactionData: Transaction[] = [];
+        if (Array.isArray(response)) {
+          transactionData = response;
+        } else if (response && Array.isArray(response.data)) {
+          transactionData = response.data;
+        }
+
+        setTransactions(transactionData);
+      } catch (err: unknown) {
+        console.error('[TransactionHistory] Error fetching transactions:', err);
+        // Show more specific error if available
+        const errorMessage = err instanceof Error ? err.message : 'Gagal memuat riwayat transaksi';
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
