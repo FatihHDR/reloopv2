@@ -169,7 +169,7 @@ export function CommerceHero() {
         <div className="w-full relative">
             {/* Hero Section */}
             <div className="container px-4 md:px-6 mx-auto max-w-7xl mt-8 md:mt-12">
-                    <div className="bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl relative overflow-hidden">
+                <div className="bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl relative overflow-hidden">
                     <DottedSurface />
                     <motion.section
                         className="w-full px-6 md:px-12 py-20 md:py-28 relative z-10"

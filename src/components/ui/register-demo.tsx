@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { RegisterPage, type Testimonial } from "@/components/ui/register";
 import { useNavigate } from "react-router-dom";
+import { authService } from "../../services";
 
 const sampleTestimonials: Testimonial[] = [
   {
@@ -24,27 +26,46 @@ const sampleTestimonials: Testimonial[] = [
 
 const RegisterPageDemo = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleRegister = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
+    setError(null);
+
     const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    
+    const data = {
+      username: formData.get('username') as string || (formData.get('email') as string)?.split('@')[0],
+      email: formData.get('email') as string,
+      password: formData.get('password') as string,
+      password_confirmation: formData.get('confirmPassword') as string,
+      full_name: formData.get('fullName') as string || formData.get('username') as string,
+      phone_number: formData.get('phone') as string || '08000000000',
+    };
+
     // Check if passwords match
-    if (data.password !== data.confirmPassword) {
-      alert("Passwords do not match!");
+    if (data.password !== data.password_confirmation) {
+      setError("Password tidak cocok!");
+      setLoading(false);
       return;
     }
-    
-    console.log("Register submitted:", data);
-    alert(`Account Created! Check the browser console for form data.`);
-    // After successful registration, navigate to login or home
-    // navigate("/login");
+
+    try {
+      await authService.register(data);
+      // After successful registration, navigate to home or login
+      navigate("/");
+    } catch (err) {
+      console.error("Register error:", err);
+      setError(err instanceof Error ? err.message : "Registrasi gagal. Silakan coba lagi.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignUp = () => {
     console.log("Sign up with Google clicked");
-    alert("Sign up with Google clicked");
+    alert("Fitur Google Sign Up belum tersedia");
     // Implement Google OAuth here
   };
 
@@ -65,7 +86,24 @@ const RegisterPageDemo = () => {
           </header>
         </div>
       </div>
-      
+
+      {/* Error message */}
+      {error && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg">
+          {error}
+        </div>
+      )}
+
+      {/* Loading overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-50 bg-background/80 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Creating account...</p>
+          </div>
+        </div>
+      )}
+
       <RegisterPage
         title={
           <span className="font-light text-foreground tracking-tighter">

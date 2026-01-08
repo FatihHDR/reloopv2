@@ -1,335 +1,448 @@
-import React, { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button } from "./button"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Sliders, X } from "lucide-react"
-import heroImg from "../../assets/assetZamZam/360_F_526999539_uDArwR72n2CRh9cynglZ5pF48O6DeYLA.jpg"
-
-type Product = {
-  id: number
-  title: string
-  price: number 
-  priceText: string
-  image: string
-  condition?: string
-  popularity?: number 
-  partnerId?: number
-}
-
-type Partner = {
-  id: number
-  name: string
-  logo?: string
-  description?: string
-  products: Product[]
-}
-
-// sample data inspired by Preloved structure but adapted to our theme
-const partnersData: Partner[] = [
-  {
-    id: 1,
-    name: "KosKita Thrift",
-    logo: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
-    description: "Preloved home & decor from kost sellers.",
-    products: [
-      { id: 11, title: "Wooden Chair", price: 120000, priceText: "Rp 120.000", image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop", condition: "Good", popularity: 45, partnerId: 1 },
-      { id: 12, title: "Bedside Lamp", price: 80000, priceText: "Rp 80.000", image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&auto=format&fit=crop", condition: "Like New", popularity: 32, partnerId: 1 },
-    ],
-  },
-  {
-    id: 2,
-    name: "ThriftThreads",
-    logo: "https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=200&h=200&fit=crop",
-    description: "Curated second-hand clothing and accessories.",
-    products: [
-      { id: 21, title: "Denim Jacket", price: 150000, priceText: "Rp 150.000", image: "https://images.unsplash.com/photo-1520975869011-9f2d8a6f5d7c?w=800&auto=format&fit=crop", condition: "Good", popularity: 72, partnerId: 2 },
-      { id: 22, title: "Vintage Tee", price: 45000, priceText: "Rp 45.000", image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=800&auto=format&fit=crop", condition: "Fair", popularity: 55, partnerId: 2 },
-    ],
-  },
-  {
-    id: 3,
-    name: "ElectroSwap",
-    logo: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=200&h=200&fit=crop",
-    description: "Used electronics checked and tested.",
-    products: [
-      { id: 31, title: "Portable Speaker", price: 200000, priceText: "Rp 200.000", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop", condition: "Good", popularity: 88, partnerId: 3 },
-    ],
-  },
-]
+import { Search, Sliders, X, Star, ArrowUpRight, Sparkles, TrendingUp, Store, Loader2 } from "lucide-react"
+import { productService, categoryService } from "../../services"
+import type { Product, Category } from "../../types/api"
 
 export default function ShopPage() {
-  const [selectedPartner, setSelectedPartner] = useState<Partner | null>(partnersData[0])
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [query, setQuery] = useState("")
   const [sort, setSort] = useState<"popular" | "price-asc" | "price-desc">("popular")
   const [filtersOpen, setFiltersOpen] = useState(false)
 
-  // flatten products with partner info
-  const allProducts = useMemo(() => {
-    return partnersData.flatMap((p) => p.products.map((prd) => ({ ...prd, partner: { id: p.id, name: p.name, logo: p.logo } })))
+  // Fetch products and categories on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        const [productsRes, categoriesRes] = await Promise.all([
+          productService.getAll({ per_page: 50 }),
+          categoryService.getAll({ per_page: 20 })
+        ])
+
+        setProducts(productsRes.data || [])
+        setCategories(categoriesRes.data || [])
+      } catch (err) {
+        console.error('Error fetching data:', err)
+        setError('Gagal memuat data. Silakan coba lagi.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
   }, [])
 
+  // Filter and sort products
   const filteredProducts = useMemo(() => {
     const q = query.trim().toLowerCase()
-    let list = allProducts.filter((prd) => {
+    let list = products.filter((prd) => {
       if (!q) return true
-      return (
-        prd.title.toLowerCase().includes(q) ||
-        (prd.partner?.name ?? "").toLowerCase().includes(q)
-      )
+      return prd.name?.toLowerCase().includes(q) || prd.description?.toLowerCase().includes(q)
     })
 
-    if (sort === "popular") list = list.sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
-    if (sort === "price-asc") list = list.sort((a, b) => a.price - b.price)
-    if (sort === "price-desc") list = list.sort((a, b) => b.price - a.price)
+    if (selectedCategory) {
+      list = list.filter((prd) => prd.category_id === selectedCategory.id)
+    }
+
+    // Sort products
+    if (sort === "popular") {
+      // Use created_at as proxy for popularity if no views field
+      list = [...list].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    }
+    if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price)
+    if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price)
 
     return list
-  }, [allProducts, query, sort])
+  }, [products, query, sort, selectedCategory])
 
+  // Popular items - first 6
   const popularItems = useMemo(() => filteredProducts.slice(0, 6), [filteredProducts])
 
-  const randomItems = useMemo(() => {
-    const copy = [...allProducts]
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[copy[i], copy[j]] = [copy[j], copy[i]]
-    }
-    return copy.slice(0, 6)
-  }, [allProducts])
+  // Format price to Indonesian Rupiah
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price)
+  }
 
-  const filteredPartners = partnersData.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()) || p.description?.toLowerCase().includes(query.toLowerCase()))
+  // Get condition display style
+  const getConditionStyle = (condition?: string) => {
+    switch (condition) {
+      case "like_new":
+        return "bg-green-100 text-green-700 border-green-200"
+      case "new_with_tag":
+        return "bg-emerald-100 text-emerald-700 border-emerald-200"
+      case "good":
+        return "bg-blue-100 text-blue-700 border-blue-200"
+      case "fair":
+        return "bg-yellow-100 text-yellow-700 border-yellow-200"
+      default:
+        return "bg-gray-100 text-gray-700 border-gray-200"
+    }
+  }
+
+  const getConditionLabel = (condition?: string) => {
+    switch (condition) {
+      case "new_with_tag": return "New with Tag"
+      case "like_new": return "Like New"
+      case "good": return "Good"
+      case "fair": return "Fair"
+      default: return condition || "Unknown"
+    }
+  }
+
+  // Get primary image URL
+  const getImageUrl = (product: Product) => {
+    if (product.primary_image?.image_url) return product.primary_image.image_url
+    if (product.images && product.images.length > 0) return product.images[0].image_url
+    return "https://images.unsplash.com/photo-1560393464-5c69a73c5770?w=800&auto=format&fit=crop"
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <p className="text-muted-foreground">Memuat produk...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Coba Lagi</Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-background pb-16">
-      <div className="container px-4 mx-auto max-w-7xl">
-        {/* Hero / banner inspired by Preloved but matching our theme */}
-        <motion.section initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl overflow-hidden mb-8">
-          <div className="relative rounded-2xl bg-gradient-to-r from-primary/40 to-accent/20">
-            <img src={heroImg} alt="hero" className="w-full h-56 object-cover opacity-90" />
-            <div className="absolute inset-0 p-8 flex flex-col justify-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">ReLoop tempat terpercaya jual beli barang second</h2>
-              <p className="text-sm text-white/90 max-w-xl mb-4">Temukan mitra terpercaya dan barang secondhand berkualitas yang hemat, ramah lingkungan, dan unik.</p>
-              <div className="flex gap-3">
-                <Link to="/shop" className="">
-                  <Button>Mulai Belanja</Button>
-                </Link>
-                <Link to="/sell" className="">
-                  <Button variant="secondary">Mulai Berjualan</Button>
-                </Link>
-              </div>
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <div className="container px-4 md:px-6 mx-auto max-w-7xl mt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="bg-gradient-to-br from-accent/30 via-accent/20 to-primary/10 rounded-3xl p-8 md:p-12 relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(var(--primary),0.1),transparent_50%)]" />
+          <div className="relative z-10">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Sustainable Shopping</span>
+            </motion.div>
+            <h1 className="text-3xl md:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-primary via-primary/90 to-primary/70 bg-clip-text text-transparent">
+                Temukan Barang Impianmu
+              </span>
+            </h1>
+            <p className="text-muted-foreground max-w-xl mb-6">
+              Jelajahi ribuan produk preloved berkualitas dari mitra terpercaya. Belanja hemat, ramah lingkungan.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link to="#products">
+                <Button className="rounded-full px-6 py-5 text-base font-medium shadow-lg hover:shadow-xl transition-all">
+                  Mulai Belanja
+                  <ArrowUpRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
             </div>
           </div>
-        </motion.section>
+        </motion.div>
+      </div>
 
-        {/* Horizontal partners scroll */}
-        <section className="mb-6">
-          <h3 className="text-lg font-semibold mb-3">Mitra Unggulan</h3>
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-border">
-            {partnersData.map((p) => (
-              <div key={p.id} className="flex gap-2">
-                <motion.button whileHover={{ scale: 1.03 }} onClick={() => setSelectedPartner(p)} className={`flex-shrink-0 w-44 p-3 rounded-xl bg-muted/30 border border-border ${selectedPartner?.id === p.id ? "ring-2 ring-primary" : ""}`}>
-                  <div className="flex items-center gap-3">
-                    <img src={p.logo} alt={p.name} className="w-12 h-12 rounded-md object-cover" />
-                    <div className="flex flex-col text-left">
-                      <div className="font-medium">{p.name}</div>
-                      <div className="text-xs text-muted-foreground">{p.description}</div>
-                    </div>
-                  </div>
-                </motion.button>
-                <Link to={`/partner/${p.id}`}>
-                  <Button size="sm" variant="outline" className="flex-shrink-0 h-full">
-                    Lihat Toko
-                  </Button>
-                </Link>
+      <div className="container px-4 md:px-6 mx-auto max-w-7xl py-10">
+        {/* Categories Section */}
+        {categories.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Store className="w-5 h-5 text-primary" />
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Controls: search + sort */}
-          {/* Controls: search + filters (animated) */}
-          <div className="flex items-center justify-between gap-4 mb-6">
-            <div className="w-full md:w-2/3 relative">
-              <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground">
-                    <Search size={18} />
-                  </div>
-                  <input
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search products or partners..."
-                    className="w-full border border-border rounded-full pl-11 pr-12 py-3 bg-background text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  />
-                  <button
-                    onClick={() => setQuery("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    aria-label="clear"
-                  >
-                    {query ? <X size={16} /> : null}
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    onClick={() => setFiltersOpen((s) => !s)}
-                    className="flex items-center gap-2 border border-border rounded-full px-3 py-2 bg-background hover:shadow-sm"
-                  >
-                    <Sliders size={16} />
-                    <span className="text-sm">Filters</span>
-                  </button>
-                </div>
+              <div>
+                <h2 className="text-2xl font-bold">Kategori</h2>
+                <p className="text-sm text-muted-foreground">Pilih kategori yang kamu cari</p>
               </div>
+            </div>
 
-              <AnimatePresence>
-                {filtersOpen && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {categories.map((category, index) => (
+                <motion.div
+                  key={category.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  onClick={() => setSelectedCategory(selectedCategory?.id === category.id ? null : category)}
+                  className={`bg-gradient-to-br from-muted/40 to-muted/20 backdrop-blur-sm rounded-2xl p-4 border transition-all cursor-pointer text-center ${selectedCategory?.id === category.id
+                    ? "border-primary ring-2 ring-primary/20 shadow-lg"
+                    : "border-border/50 hover:border-primary/50 hover:shadow-md"
+                    }`}
+                >
+                  {category.icon_url && (
+                    <img src={category.icon_url} alt={category.name} className="w-12 h-12 mx-auto mb-2 rounded-lg object-cover" />
+                  )}
+                  <h3 className="font-medium text-sm">{category.name}</h3>
+                </motion.div>
+              ))}
+            </div>
+          </motion.section>
+        )}
+
+        {/* Popular Items */}
+        {popularItems.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Sedang Populer</h2>
+                <p className="text-sm text-muted-foreground">Produk yang banyak diminati</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {popularItems.map((prd, index) => (
+                <Link key={prd.id} to={`/product/${prd.id}`}>
                   <motion.div
-                    initial={{ opacity: 0, y: -6 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    className="absolute left-0 mt-3 w-full md:w-1/2 bg-background border border-border rounded-lg shadow-lg p-4 z-30"
+                    transition={{ delay: 0.05 * index }}
+                    whileHover={{ scale: 1.03, y: -4 }}
+                    className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all group"
                   >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="font-medium">Filter</div>
-                      <button onClick={() => setFiltersOpen(false)} className="text-muted-foreground hover:text-foreground"><X size={18} /></button>
+                    <div className="relative aspect-square overflow-hidden">
+                      <img src={getImageUrl(prd)} alt={prd.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      {prd.condition_status && (
+                        <div className={`absolute top-2 left-2 px-2 py-1 rounded-full text-xs font-medium border ${getConditionStyle(prd.condition_status)}`}>
+                          {getConditionLabel(prd.condition_status)}
+                        </div>
+                      )}
                     </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <div className="text-sm font-medium mb-1">Sort by</div>
-                        <div className="flex gap-2">
-                          <label className={`px-3 py-2 rounded-md border ${sort === "popular" ? "border-primary bg-primary/5" : "border-border"}`}>
-                            <input type="radio" name="sort" className="sr-only" checked={sort === "popular"} onChange={() => setSort("popular")} />
-                            <span className="text-sm">Paling Populer</span>
-                          </label>
-                          <label className={`px-3 py-2 rounded-md border ${sort === "price-asc" ? "border-primary bg-primary/5" : "border-border"}`}>
-                            <input type="radio" name="sort" className="sr-only" checked={sort === "price-asc"} onChange={() => setSort("price-asc")} />
-                            <span className="text-sm">Harga: Terendah</span>
-                          </label>
-                          <label className={`px-3 py-2 rounded-md border ${sort === "price-desc" ? "border-primary bg-primary/5" : "border-border"}`}>
-                            <input type="radio" name="sort" className="sr-only" checked={sort === "price-desc"} onChange={() => setSort("price-desc")} />
-                            <span className="text-sm">Harga: Tertinggi</span>
-                          </label>
-                        </div>
-                      </div>
-
-                      {/* Placeholder: future filters like price range, condition */}
-                      <div>
-                        <div className="text-sm font-medium mb-1">Condition</div>
-                        <div className="flex gap-2">
-                          <button className="px-3 py-2 rounded-md border border-border text-sm">Any</button>
-                          <button className="px-3 py-2 rounded-md border border-border text-sm">Like New</button>
-                          <button className="px-3 py-2 rounded-md border border-border text-sm">Good</button>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 justify-end">
-                        <Button size="sm" onClick={() => { setQuery(""); setSort("popular"); setFiltersOpen(false) }}>Reset</Button>
-                        <Button size="sm" onClick={() => setFiltersOpen(false)}>Apply</Button>
-                      </div>
+                    <div className="p-3">
+                      <h3 className="font-medium text-sm line-clamp-1">{prd.name}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-1">{prd.seller?.full_name || prd.seller?.username}</p>
+                      <p className="font-bold text-primary mt-2">{formatPrice(prd.price)}</p>
                     </div>
                   </motion.div>
-                )}
-              </AnimatePresence>
+                </Link>
+              ))}
             </div>
-          
-            <div className="flex items-center gap-3 md:gap-6">
-              {/* small helper - current sort label */}
-              <div className="text-sm text-muted-foreground">Showing {filteredProducts.length} items</div>
+          </motion.section>
+        )}
+
+        {/* Search & Filter Section */}
+        <div id="products" className="mb-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Semua Produk</h2>
+              <p className="text-sm text-muted-foreground">
+                {selectedCategory ? `Menampilkan produk dari kategori ${selectedCategory.name}` : "Jelajahi semua katalog produk"}
+              </p>
             </div>
-          </div>
 
-        {/* Popular items */}
-        <section className="mb-8">
-          <h3 className="text-xl font-semibold mb-4">Sedang Populer</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {popularItems.map((prd) => (
-              <Link key={prd.id} to={`/product/${prd.id}`}>
-                <motion.div whileHover={{ scale: 1.02 }} className="bg-background/60 border border-border rounded-lg p-2 cursor-pointer hover:shadow-md transition-shadow">
-                  <img src={prd.image} alt={prd.title} className="w-full h-28 object-cover rounded-md mb-2" />
-                  <div className="text-sm font-medium">{prd.title}</div>
-                  <div className="text-xs text-muted-foreground">{prd.partner?.name}</div>
-                  <div className="mt-2 font-semibold">{prd.priceText}</div>
-                </motion.div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Random picks */}
-        <section className="mb-8">
-          <h3 className="text-xl font-semibold mb-4">Pilihan Acak Untukmu</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {randomItems.map((prd) => (
-              <Link key={prd.id} to={`/product/${prd.id}`}>
-                <motion.div whileHover={{ scale: 1.02 }} className="bg-background/60 border border-border rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
-                  <img src={prd.image} alt={prd.title} className="w-full h-40 object-cover" />
-                  <div className="p-3">
-                    <div className="font-semibold">{prd.title}</div>
-                    <div className="text-xs text-muted-foreground">{prd.partner?.name}</div>
-                    <div className="mt-2 flex items-center justify-between">
-                      <div className="font-medium">{prd.priceText}</div>
-                      <Button size="sm">Lihat</Button>
-                    </div>
-                  </div>
-                </motion.div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Main product grid (filtered) and partner profile embedded */}
-        <section>
-          <h3 className="text-xl font-semibold mb-4">Semua Produk</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <aside className="md:col-span-1">
-              <div className="bg-muted/30 p-4 rounded-lg border border-border sticky top-24">
-                <h4 className="font-semibold mb-2">Profil Mitra</h4>
-                {selectedPartner ? (
-                  <div className="flex flex-col items-start gap-3">
-                    <img src={selectedPartner.logo} alt={selectedPartner.name} className="w-20 h-20 rounded-md object-cover" />
-                    <div className="font-medium">{selectedPartner.name}</div>
-                    <div className="text-sm text-muted-foreground">{selectedPartner.description}</div>
-                    <div className="mt-2 w-full flex gap-2 flex-col">
-                      <Link to={`/partner/${selectedPartner.id}`} className="w-full">
-                        <Button size="sm" className="w-full">Lihat Toko</Button>
-                      </Link>
-                      <Button size="sm" variant="outline" onClick={() => setSelectedPartner(null)}>Lihat Semua Mitra</Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-sm text-muted-foreground">Pilih mitra untuk melihat profilnya.</div>
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="relative flex-1 md:w-80">
+                <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-muted-foreground">
+                  <Search size={18} />
+                </div>
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Cari produk..."
+                  className="w-full border border-border rounded-full pl-10 pr-10 py-2.5 bg-background text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+                {query && (
+                  <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                    <X size={16} />
+                  </button>
                 )}
               </div>
-            </aside>
 
-            <main className="md:col-span-3">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="relative">
+                <button
+                  onClick={() => setFiltersOpen(!filtersOpen)}
+                  className={`flex items-center gap-2 border rounded-full px-4 py-2.5 bg-background hover:shadow-sm transition-all ${filtersOpen ? "border-primary" : "border-border"
+                    }`}
+                >
+                  <Sliders size={16} />
+                  <span className="text-sm hidden sm:inline">Filter</span>
+                </button>
+
                 <AnimatePresence>
-                  {filteredProducts.map((prd) => (
-                    <Link key={prd.id} to={`/product/${prd.id}`}>
-                      <motion.div layout initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} className="bg-background/60 border border-border rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow">
-                        <img src={prd.image} alt={prd.title} className="w-full h-44 object-cover" />
-                        <div className="p-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <div className="font-semibold">{prd.title}</div>
-                              <div className="text-xs text-muted-foreground">{prd.condition} • {prd.partner?.name}</div>
-                            </div>
-                            <img src={prd.partner?.logo} alt={prd.partner?.name} className="w-10 h-10 rounded-md object-cover" />
-                          </div>
-                          <div className="mt-3 flex items-center justify-between">
-                            <div className="font-medium">{prd.priceText}</div>
-                            <Button size="sm">Lihat</Button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </Link>
-                  ))}
+                  {filtersOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      className="absolute right-0 mt-2 w-72 bg-card border border-border rounded-2xl shadow-xl p-4 z-50"
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="font-semibold">Urutkan</span>
+                        <button onClick={() => setFiltersOpen(false)} className="text-muted-foreground hover:text-foreground">
+                          <X size={18} />
+                        </button>
+                      </div>
+                      <div className="space-y-2">
+                        {[
+                          { value: "popular", label: "Terbaru" },
+                          { value: "price-asc", label: "Harga: Terendah" },
+                          { value: "price-desc", label: "Harga: Tertinggi" },
+                        ].map((option) => (
+                          <label
+                            key={option.value}
+                            className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${sort === option.value ? "bg-primary/10 border border-primary/30" : "hover:bg-muted/50"
+                              }`}
+                          >
+                            <input
+                              type="radio"
+                              name="sort"
+                              className="sr-only"
+                              checked={sort === option.value}
+                              onChange={() => setSort(option.value as typeof sort)}
+                            />
+                            <span className={`text-sm ${sort === option.value ? "font-medium text-primary" : ""}`}>{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 rounded-full"
+                          onClick={() => {
+                            setSort("popular")
+                            setSelectedCategory(null)
+                          }}
+                        >
+                          Reset
+                        </Button>
+                        <Button size="sm" className="flex-1 rounded-full" onClick={() => setFiltersOpen(false)}>
+                          Terapkan
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
               </div>
-            </main>
+            </div>
           </div>
-        </section>
+
+          {selectedCategory && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="mb-4"
+            >
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm">
+                <span>Kategori: {selectedCategory.name}</span>
+                <button onClick={() => setSelectedCategory(null)} className="hover:bg-primary/20 rounded-full p-0.5">
+                  <X size={14} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          <p className="text-sm text-muted-foreground mb-6">Menampilkan {filteredProducts.length} produk</p>
+        </div>
+
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <AnimatePresence>
+            {filteredProducts.map((prd, index) => (
+              <Link key={prd.id} to={`/product/${prd.id}`}>
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  transition={{ delay: 0.03 * index }}
+                  whileHover={{ y: -6 }}
+                  className="bg-card border border-border rounded-2xl overflow-hidden hover:shadow-xl transition-all group"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img src={getImageUrl(prd)} alt={prd.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    {prd.condition_status && (
+                      <div className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium border ${getConditionStyle(prd.condition_status)}`}>
+                        {getConditionLabel(prd.condition_status)}
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold line-clamp-1">{prd.name}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-1">{prd.category?.name}</p>
+                      </div>
+                      {prd.seller?.profile_picture_url && (
+                        <img src={prd.seller.profile_picture_url} alt={prd.seller.full_name} className="w-10 h-10 rounded-lg object-cover border border-border" />
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs text-muted-foreground">{prd.seller?.full_name || prd.seller?.username}</span>
+                      {prd.seller?.seller_code && (
+                        <span className="bg-blue-500 text-white text-[10px] px-1.5 py-0.5 rounded">✓</span>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-primary">{formatPrice(prd.price)}</span>
+                      <Button size="sm" className="rounded-full">
+                        Lihat
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              </Link>
+            ))}
+          </AnimatePresence>
+        </div>
+
+        {filteredProducts.length === 0 && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+            <div className="w-20 h-20 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
+              <Search className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Tidak ada produk ditemukan</h3>
+            <p className="text-muted-foreground mb-4">Coba kata kunci lain atau reset filter</p>
+            <Button variant="outline" onClick={() => { setQuery(""); setSelectedCategory(null) }}>
+              Reset Pencarian
+            </Button>
+          </motion.div>
+        )}
       </div>
     </div>
   )

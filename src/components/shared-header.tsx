@@ -1,28 +1,15 @@
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
+import { ArrowUpRight, ShoppingCart, Package } from "lucide-react";
 
-import { Link, Outlet } from "react-router-dom"
-import { ArrowUpRight, Home, ShoppingBag, PackageSearch, Info, ShoppingCart, Package } from "lucide-react"
-import { NavBar } from "./tubelight-navbar"
-import { Component as Footer } from "../footer-taped-design"
-import { Button } from "./button"
-
-const navItems = [
-  { name: "Home", url: "/", icon: Home },
-  { name: "Shop", url: "/shop", icon: ShoppingBag },
-  { name: "Categories", url: "#categories", icon: PackageSearch },
-  { name: "About", url: "/about", icon: Info },
-]
-
-export default function Layout() {
+export function SharedHeader() {
   return (
-    <div className="w-full bg-background">
+    <div className="w-full bg-background border-b border-border">
       <div className="container px-4 md:px-6 mx-auto max-w-7xl">
-        <header className="flex items-center justify-between pt-6 pb-4 border-b border-border sticky top-0 z-50 backdrop-blur-md bg-background/80">
+        <header className="flex items-center justify-between py-4">
           <Link to="/" className="text-2xl font-semibold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
             ReLoop_
           </Link>
-
-          <NavBar items={navItems} />
-
           <div className="flex items-center gap-3">
             <Link to="/cart">
               <Button
@@ -58,12 +45,6 @@ export default function Layout() {
           </div>
         </header>
       </div>
-
-      <main>
-        <Outlet />
-      </main>
-
-      <Footer />
     </div>
-  )
+  );
 }

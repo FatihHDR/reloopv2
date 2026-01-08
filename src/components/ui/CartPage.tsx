@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, Minus } from 'lucide-react';
-import { SharedHeader } from '../shared-header';
+
 import { Button } from './button';
 
 interface CartItem {
@@ -18,9 +18,9 @@ interface CartItem {
 const CartPage = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState<CartItem[]>([
-  { id: '1', name: 'White Jacket', store: 'Store A', price: 100000, quantity: 1, image: 'https://images.unsplash.com/photo-1683497802829-0ff027c1df61?auto=format&fit=crop&w=500&q=80', selected: false },
-  { id: '2', name: 'Wireless Headphones', store: 'Store B', price: 200000, quantity: 2, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80', selected: true },
-  { id: '3', name: 'Smart Watch', store: 'Store B', price: 200000, quantity: 3, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80', selected: true },
+    { id: '1', name: 'White Jacket', store: 'Store A', price: 100000, quantity: 1, image: 'https://images.unsplash.com/photo-1683497802829-0ff027c1df61?auto=format&fit=crop&w=500&q=80', selected: false },
+    { id: '2', name: 'Wireless Headphones', store: 'Store B', price: 200000, quantity: 2, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80', selected: true },
+    { id: '3', name: 'Smart Watch', store: 'Store B', price: 200000, quantity: 3, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=500&q=80', selected: true },
   ]);
   const [selectAll, setSelectAll] = useState(false);
 
@@ -56,7 +56,7 @@ const CartPage = () => {
   const totalItems = selectedItems.reduce((s, i) => s + i.quantity, 0);
 
   const stores = Array.from(new Set(items.map(i => i.store)));
-  
+
   const handleCheckout = () => {
     if (selectedItems.length > 0) {
       navigate('/checkout', { state: { selectedItems } });
@@ -65,8 +65,8 @@ const CartPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SharedHeader />
-      
+
+
       <div className="container px-4 md:px-6 mx-auto max-w-7xl py-8">
         {/* Page Title */}
         <motion.div
@@ -194,13 +194,13 @@ const CartPage = () => {
           >
             <div className="bg-gradient-to-br from-accent/20 via-accent/10 to-primary/5 border border-border rounded-2xl p-6 sticky top-6">
               <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-              
+
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Total Items</span>
                   <span className="font-medium">{totalItems}</span>
                 </div>
-                
+
                 {selectedItems.length > 0 && (
                   <div className="border-t border-border pt-3 space-y-2">
                     {selectedItems.map(item => (
@@ -216,7 +216,7 @@ const CartPage = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="border-t border-border pt-4 space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>

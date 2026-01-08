@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { SignInPage, type Testimonial } from "@/components/ui/sign-in";
 import { useNavigate } from "react-router-dom";
+import { authService } from "../../services";
 
 const sampleTestimonials: Testimonial[] = [
   {
@@ -24,25 +26,38 @@ const sampleTestimonials: Testimonial[] = [
 
 const SignInPageDemo = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSignIn = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
+    setError(null);
+
     const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    console.log("Sign In submitted:", data);
-    alert(`Sign In Submitted! Check the browser console for form data.`);
-    // After successful login, navigate to home
-    // navigate("/");
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      await authService.login({ email, password });
+      // After successful login, navigate to home
+      navigate("/");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err instanceof Error ? err.message : "Login gagal. Periksa email dan password Anda.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignIn = () => {
     console.log("Continue with Google clicked");
-    alert("Continue with Google clicked");
+    alert("Fitur Google Sign In belum tersedia");
     // Implement Google OAuth here
   };
-  
+
   const handleResetPassword = () => {
-    alert("Reset Password clicked");
+    alert("Reset Password clicked - Fitur belum tersedia");
     // Implement password reset logic or navigate to reset page
   }
 
@@ -63,7 +78,24 @@ const SignInPageDemo = () => {
           </header>
         </div>
       </div>
-      
+
+      {/* Error message */}
+      {error && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-lg">
+          {error}
+        </div>
+      )}
+
+      {/* Loading overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-50 bg-background/80 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm text-muted-foreground">Signing in...</p>
+          </div>
+        </div>
+      )}
+
       <SignInPage
         title={
           <span className="font-light text-foreground tracking-tighter">
