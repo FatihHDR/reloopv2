@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import { Button } from "./button"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Sliders, X, Star, ArrowUpRight, Sparkles, TrendingUp, Store, Loader2 } from "lucide-react"
+import { Search, Sliders, X, ArrowUpRight, Sparkles, TrendingUp, Store, Loader2 } from "lucide-react"
 import { productService, categoryService } from "../../services"
 import type { Product, Category } from "../../types/api"
 

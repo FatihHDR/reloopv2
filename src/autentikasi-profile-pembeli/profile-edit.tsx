@@ -3,13 +3,11 @@ import { User, Camera, Mail, Phone, Plus, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService, getToken } from '../services';
 import { api } from '../services/api';
-import type { User as UserType } from '../types/api';
 
 export default function EditProfilePage() {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
-    const [user, setUser] = useState<UserType | null>(null);
     const [profileData, setProfileData] = useState({
         full_name: '',
         email: '',
@@ -30,7 +28,6 @@ export default function EditProfilePage() {
 
             try {
                 const userData = await authService.me();
-                setUser(userData);
                 setProfileData({
                     full_name: userData.full_name || '',
                     email: userData.email || '',
